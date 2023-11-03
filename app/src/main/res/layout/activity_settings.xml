@@ -6,15 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingStart="@dimen/padding_for_layout"
-    android:paddingEnd="12dp">
+    android:paddingHorizontal="@dimen/padding_for_layout">
 
 
-  <RelativeLayout
+  <LinearLayout
 
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="4dp">
+      android:layout_height="@dimen/height_settings"
+     >
 
 
     <ImageView
@@ -22,31 +21,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/back" />
+        android:src="@drawable/back"
+        android:layout_gravity="center_vertical"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="12dp"
         android:layout_toEndOf="@id/backButton"
         android:text="@string/button_setting"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/black"
         android:textSize="@dimen/primary_text_size" />
 
-  </RelativeLayout>
+  </LinearLayout>
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="24dp"
-      android:orientation="vertical">
+
 
 
     <Switch
+        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
-        android:layout_height="61dp"
+        android:layout_height="@dimen/height_settings"
         android:text="@string/night_theme"
         android:textSize="@dimen/setting_text_size"
         android:checked="false"
@@ -54,7 +50,7 @@
         />
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="61dp">
+        android:layout_height="@dimen/height_settings">
 
       <ImageView
           android:layout_width="wrap_content"
@@ -73,7 +69,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="61dp">
+        android:layout_height="@dimen/height_settings">
 
       <ImageView
           android:layout_width="wrap_content"
@@ -92,7 +88,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="61dp">
+        android:layout_height="@dimen/height_settings">
 
       <ImageView
           android:layout_width="wrap_content"
@@ -110,7 +106,7 @@
           android:textSize="@dimen/setting_text_size"/>
     </FrameLayout>
 
-  </LinearLayout>
+
 
 
 </LinearLayout>
