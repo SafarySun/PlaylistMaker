@@ -24,20 +24,16 @@ class MainActivity : AppCompatActivity() {
             val searchIntent = Intent(this, SearchActivity::class.java)
             startActivity(searchIntent)
         }
-
         val mediaLibrary = findViewById<MaterialButton>(R.id.libraryButton)
         mediaLibrary.setOnClickListener {
             val mediaLibraryIntent = Intent(this, MediaLibraryActivity::class.java)
             startActivity(mediaLibraryIntent)
         }
-
         val settingApp = findViewById<MaterialButton>(R.id.settingsButton)
-
         settingApp.setOnClickListener {
             val settingsIntent = Intent(this, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }
-
     }
 }
 

@@ -54,12 +54,35 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/height_settings</item>
         <item name="android:layout_marginTop">24dp</item>
-        <item name="android:checked">false</item>
         <item name="android:text">@string/night_theme</item>
         <item name="android:textColor">@color/YP_black</item>
         <item name="android:textSize">@dimen/setting_text_size</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="ToolbarBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/standart_padding</item>
+    </style>
+
+    <style name="ToolbarBack">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="tint">@color/day_night</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginStart">@dimen/toolbar_padding</item>
+        <item name="android:textColor">@color/day_night</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
     </style>
 
 </resources>
