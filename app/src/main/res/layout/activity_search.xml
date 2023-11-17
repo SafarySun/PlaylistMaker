@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="@dimen/padding_for_layout"
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
@@ -26,9 +25,10 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding_for_layout"
+        android:layout_marginTop="@dimen/padding_for_layout"
         android:background="@drawable/search_frame"
         android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/padding_for_layout"
         >
         <ImageView
             android:id="@+id/searchIcon"
@@ -37,21 +37,23 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/standart_padding"
             android:src="@drawable/search"
-            app:tint="@color/black" />
+            app:tint="@color/text_hint"
+
+            />
 
         <EditText
             android:id="@+id/inputEditText"
+            style="@style/EditTextStyle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/button_search"
             android:inputType="text"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            android:layout_gravity="center"
+
+            />
 
         <ImageView
+
             android:id="@+id/clearIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,6 +61,6 @@
             android:layout_margin="@dimen/standart_padding"
             android:src="@drawable/clean_line"
             android:visibility="gone"
-            app:tint="@color/black" />
+            app:tint="@color/text_hint" />
     </LinearLayout>
 </LinearLayout>

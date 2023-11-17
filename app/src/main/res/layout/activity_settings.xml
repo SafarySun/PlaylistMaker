@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/padding_for_layout">
-
+    android:orientation="vertical">
 
     <LinearLayout style="@style/ToolbarBox">
 
@@ -22,11 +20,13 @@
 
     <Switch
         android:id="@+id/btn_switch_theme"
-        style="@style/SwitchTheme" />
+        style="@style/SwitchTheme"
+        android:paddingHorizontal="@dimen/padding_for_layout" />
 
     <FrameLayout
         android:id="@+id/btn_share_app"
-        style="@style/Boxframe">
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
 
         <ImageView
             style="@style/ImageCase"
@@ -39,7 +39,8 @@
 
     <FrameLayout
         android:id="@+id/btn_write_support"
-        style="@style/Boxframe">
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
 
         <ImageView
             style="@style/ImageCase"
@@ -52,7 +53,8 @@
 
     <FrameLayout
         android:id="@+id/btn_ageement"
-        style="@style/Boxframe">
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
 
         <ImageView
             style="@style/ImageCase"

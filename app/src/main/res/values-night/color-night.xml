@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="day_night">@color/white</color>
+    <color name="hint">@color/white</color>
+    <color name="text_hint">@color/black</color>
+
 </resources>

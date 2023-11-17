@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 
 class SearchActivity : AppCompatActivity() {
-    private var searchText = VALUE_DEF
+    private var searchText = "VALUE_DEF"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -24,7 +24,7 @@ class SearchActivity : AppCompatActivity() {
         }
         // Проверка строки
         if (savedInstanceState != null) {
-            searchText = savedInstanceState.getString(QUERY_VALUE, VALUE_DEF)
+            searchText = savedInstanceState.getString(QUERY_VALUE, searchText)
             inputEditText.setText(searchText)
         }
         // Фокусировка
@@ -62,11 +62,7 @@ class SearchActivity : AppCompatActivity() {
     }
      override fun onRestoreInstanceState(savedInstanceState: Bundle) {
        super.onRestoreInstanceState(savedInstanceState)
-     searchText = savedInstanceState.getString(QUERY_VALUE,  VALUE_DEF)
-    }
-    companion object {
-        const val QUERY_VALUE = "QUERY_VALUE"
-        const val VALUE_DEF = ""
+     searchText = savedInstanceState.getString(QUERY_VALUE,  "")
     }
     //Функция - Видимость опз
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -75,6 +71,9 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+    companion object {
+       private const val QUERY_VALUE = "QUERY_VALUE"
     }
 
 }
