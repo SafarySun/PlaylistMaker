@@ -1,71 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/padding_for_layout">
+    android:orientation="vertical">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+    <LinearLayout style="@style/ToolbarBox">
 
         <ImageView
             android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            app:tint="@color/day_night"
+            style="@style/ToolbarBack"
             android:src="@drawable/back" />
 
         <TextView
-            android:fontFamily="@font/ys_display_medium"
-            android:textFontWeight="500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"
-            android:layout_toEndOf="@id/backButton"
-            android:text="@string/button_setting"
-            android:textColor="@color/day_night"
-            android:textSize="@dimen/primary_text_size" />
+            style="@style/ToolbarTitle"
+            android:text="@string/button_setting" />
     </LinearLayout>
 
 
     <Switch
-        style="@style/SwitchTheme" />
+        android:id="@+id/btn_switch_theme"
+        style="@style/SwitchTheme"
+        android:paddingHorizontal="@dimen/padding_for_layout" />
 
     <FrameLayout
-        style="@style/Boxframe">
+        android:id="@+id/btn_share_app"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
+
         <ImageView
             style="@style/ImageCase"
-            android:src="@drawable/sent"/>
+            android:src="@drawable/sent" />
+
         <TextView
             style="@style/TextSettings"
             android:text="@string/send_app" />
     </FrameLayout>
 
     <FrameLayout
-        style="@style/Boxframe">
+        android:id="@+id/btn_write_support"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
+
         <ImageView
             style="@style/ImageCase"
             android:src="@drawable/group" />
+
         <TextView
             style="@style/TextSettings"
             android:text="@string/support" />
     </FrameLayout>
 
     <FrameLayout
-        style="@style/Boxframe">
+        android:id="@+id/btn_ageement"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout">
+
         <ImageView
             style="@style/ImageCase"
             android:src="@drawable/agreement" />
+
         <TextView
             style="@style/TextSettings"
-            android:text="@string/user_agree"/>
+            android:text="@string/user_agree" />
     </FrameLayout>
 
 

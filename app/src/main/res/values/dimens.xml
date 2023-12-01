@@ -5,6 +5,7 @@
     <dimen name="setting_text_size">19sp</dimen>
     <dimen name="standart_padding">8dp</dimen>
     <dimen name="height_settings">64dp</dimen>
+    <dimen name="toolbar_padding">12dp</dimen>
 
 
 </resources>
