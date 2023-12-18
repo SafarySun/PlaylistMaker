@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,6 +15,7 @@ import android.widget.Switch
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var sharedPrefs: SharedPreferences
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -40,7 +42,7 @@ class SettingsActivity : AppCompatActivity() {
         val writeSupport = findViewById<FrameLayout>(R.id.btn_write_support)
         writeSupport.setOnClickListener {
 
-            val messageIntent = Intent(Intent.ACTION_SENDTO).apply {
+            Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.adress_email)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.text_theme))
@@ -54,7 +56,7 @@ class SettingsActivity : AppCompatActivity() {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.putExtra(Intent.EXTRA_TEXT,getString(R.string.adress_android)
             )
-            shareIntent.setType("text/plain")
+            shareIntent.type = "text/plain"
             startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
         }
         //Пользовательское Соглашение

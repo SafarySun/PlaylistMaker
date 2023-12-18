@@ -6,6 +6,8 @@
     <dimen name="standart_padding">8dp</dimen>
     <dimen name="height_settings">64dp</dimen>
     <dimen name="toolbar_padding">12dp</dimen>
+    <dimen name="frame_padding24">24dp</dimen>
+    <dimen name="avtor_image">46dp</dimen>
 
 
 </resources>
