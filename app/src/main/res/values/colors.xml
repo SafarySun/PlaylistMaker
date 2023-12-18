@@ -15,4 +15,5 @@
     <color name="text_hint">@color/YP_Text_Gray</color>
     <color name="day_night">@color/black</color>
     <color name="hint">@color/YP_Light_Gray</color>
+    <color name="update_text">@color/white</color>
 </resources>

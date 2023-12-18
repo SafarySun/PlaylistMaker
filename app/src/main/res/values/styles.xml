@@ -3,21 +3,21 @@
 
     <style name="MenuButtons" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:textAllCaps">false</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_marginBottom">@dimen/standart_padding</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textColor">@color/YP_black</item>
-        <item name="android:textSize">@dimen/primary_text_size</item>
-        <item name="cornerRadius">@dimen/padding_for_layout</item>
-        <item name="iconSize">@dimen/primary_text_size</item>
-        <item name="iconGravity">textStart</item>
-        <item name="iconPadding">@dimen/standart_padding</item>
         <item name="iconTint">@color/YP_black</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
+
+    </style>
+
+    <style name="updateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:backgroundTint">@color/day_night</item>
+        <item name="android:textColor">@color/update_text</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+
 
     </style>
 
