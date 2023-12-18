@@ -8,6 +8,7 @@
     <string name="support" translatable="false">Написать в поддержку</string>
     <string name="user_agree" translatable="false">Пользовательское соглашение</string>
     <string name="text_format" translatable="false">%s•%s</string>
+    <string name="update" translatable="false">Обновить</string>
 
     <string name="adress_email" translatable="false">arakalandadze@gmail.com</string>
     <string name="text_theme" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
@@ -15,5 +16,8 @@
     <string name="adress_website" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="adress_android" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="share" translatable="false">Поделиться</string>
+
+    <string name="error_internet" translatable="false">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="error_empty_search" translatable="false">Ничего не нашлось</string>
 
 </resources>

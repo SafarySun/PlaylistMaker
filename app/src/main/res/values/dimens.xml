@@ -8,6 +8,7 @@
     <dimen name="toolbar_padding">12dp</dimen>
     <dimen name="frame_padding24">24dp</dimen>
     <dimen name="avtor_image">46dp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
 
 
 </resources>
