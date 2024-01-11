@@ -9,6 +9,8 @@
     <string name="user_agree" translatable="false">Пользовательское соглашение</string>
     <string name="text_format" translatable="false">%s•%s</string>
     <string name="update" translatable="false">Обновить</string>
+    <string name="clear" translatable="false">Очистить историю</string>
+    <string name="title_history" translatable="false">Вы искали</string>
 
     <string name="adress_email" translatable="false">arakalandadze@gmail.com</string>
     <string name="text_theme" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
