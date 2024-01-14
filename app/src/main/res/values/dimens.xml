@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_for_layout">16dp</dimen>
+
+    <dimen name="primary_text_size">26sp</dimen>
+    <dimen name="setting_text_size">19sp</dimen>
+
+    <dimen name="standart_padding">8dp</dimen>
+    <dimen name="height_settings">64dp</dimen>
+    <dimen name="toolbar_padding">12dp</dimen>
+    <dimen name="frame_padding24">24dp</dimen>
+    <dimen name="avtor_image">46dp</dimen>
+
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_22">22sp</dimen>
+
+
+</resources>
