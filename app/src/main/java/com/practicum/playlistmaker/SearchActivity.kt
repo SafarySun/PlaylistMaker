@@ -1,13 +1,11 @@
 package com.practicum.playlistmaker
 
-
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -41,7 +39,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historySearchHead: LinearLayout
     private var placeholderMessage: TextView? = null
     private var updateButton: Button? = null
-
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,29 +56,21 @@ class SearchActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences(SHARED_PREF_ITEM, MODE_PRIVATE)
         historySearchHead = findViewById(R.id.history_head)
         val searchHistory = SearchHistory(sharedPref)
-        val trackListFromSharedPerf = searchHistory.loadTracks()
         val rvSearch = findViewById<RecyclerView>(R.id.recycleViewSearch)
         val rvHistori = findViewById<RecyclerView>(R.id.rvHistory)
-        searchHistory.loadTracks()
-        // Проверка строки
-        /*if (savedInstanceState != null) {
-            searchText = savedInstanceState.getString(QUERY_VALUE, searchText)
-            inputEditText.setText(searchText)
-        }*/
+        adapterHistory.tracks = searchHistory.loadTracks()
+
         // Кнопка назад
         back.setOnClickListener {
             finish()
         }
-
 
         // Фокусировка
         inputEditText.setOnClickListener {
             inputEditText.requestFocus()
         }
 
-            historySearchHead.isVisible = trackListFromSharedPerf.isNotEmpty()
-
-
+        historySearchHead.isVisible = false
 
         //Очистить строку и убрать клаву
         clearButton.setOnClickListener {
@@ -93,10 +82,8 @@ class SearchActivity : AppCompatActivity() {
             updateButton?.visibility = View.GONE
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
-
-
-
-
+            // adapterHistory.notifyItemRemoved(0)
+            //adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
         }
         //Наблюдатель Текста
         val simpleTextWatcher = object : TextWatcher {
@@ -108,10 +95,9 @@ class SearchActivity : AppCompatActivity() {
                 searchText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
 
-                historySearchHead.isVisible =
-                    inputEditText.hasFocus() && s?.isEmpty() == true && trackListFromSharedPerf.isNotEmpty()
-
-
+                if (inputEditText.hasFocus() && s?.isEmpty() == true && adapterHistory.tracks.isNotEmpty()) {
+                    historySearchHead.isVisible = true
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -123,51 +109,52 @@ class SearchActivity : AppCompatActivity() {
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
 
-                historySearchHead.isVisible =
-                     (hasFocus && inputEditText.text.isEmpty() && trackListFromSharedPerf.isNotEmpty())
-
-
-
+            if (hasFocus && inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()) {
+                historySearchHead.isVisible = true
+            }
         }
+
         // adapter search track
         rvSearch.adapter = adapter
         rvHistori.adapter = adapterHistory
-        adapterHistory.tracks = trackListFromSharedPerf
+
         val onClickTrackItem = object : ClickListernForTrack {
             override fun onTrackClickListern(track: Track) {
                 searchHistory.addTrackToHistory(track)
-                adapterHistory.notifyDataSetChanged()
-
+                adapterHistory.tracks = searchHistory.loadTracks()
+                adapterHistory.notifyItemRemoved(0)
+                adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
             }
         }
+
         adapter.clickListern = onClickTrackItem
         //adapter history track
-
 
         val onClickHistoryTrack = object : ClickListernForTrack {
             override fun onTrackClickListern(track: Track) {
                 val position = adapterHistory.tracks.indexOf(track)
-                trackListFromSharedPerf.remove(track)
-                searchHistory.saveTrackToJson(trackListFromSharedPerf)
+                adapterHistory.tracks.remove(track)
+                searchHistory.saveTrackToJson(adapterHistory.tracks)
                 adapterHistory.notifyItemRemoved(position)
                 adapterHistory.notifyItemRangeChanged(position, adapterHistory.tracks.size)
 
                 if (adapterHistory.tracks.isEmpty()) {
-                historySearchHead.visibility = View.GONE
-                } else{
+                    historySearchHead.visibility = View.GONE
+                } else {
                     historySearchHead.visibility = View.VISIBLE
                 }
             }
         }
         adapterHistory.clickListern = onClickHistoryTrack
 
-// Clear History Button
+        // Clear History Button
         clearHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
             adapterHistory.tracks.clear()
             historySearchHead.isVisible = false
             adapterHistory.notifyDataSetChanged()
         }
+
         //Вешаем на строку ввода слушателя событий
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
