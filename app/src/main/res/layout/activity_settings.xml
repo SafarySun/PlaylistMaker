@@ -17,8 +17,7 @@
             android:text="@string/button_setting" />
     </LinearLayout>
 
-
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/btn_switch_theme"
         style="@style/SwitchTheme"
         android:paddingHorizontal="@dimen/padding_for_layout" />
