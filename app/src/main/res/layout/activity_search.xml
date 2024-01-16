@@ -175,11 +175,7 @@
             android:text="@string/clear"
             android:textSize="@dimen/text_size_14"
             app:cornerRadius="@dimen/frame_padding24"
-            android:letterSpacing="0"
-            />
-
-
-
+            android:letterSpacing="0" />
     </LinearLayout>
 </ScrollView>
 
