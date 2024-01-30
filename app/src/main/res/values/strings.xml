@@ -12,6 +12,12 @@
     <string name="clear" translatable="false">Очистить историю</string>
     <string name="title_history" translatable="false">Вы искали</string>
 
+    <string name="country" translatable="false">Страна</string>
+    <string name="album" translatable="false">Альбом</string>
+    <string name="year" translatable="false">Год</string>
+    <string name="ganre" translatable="false">Жанр</string>
+    <string name="duration" translatable="false">Длительность</string>
+
     <string name="adress_email" translatable="false">arakalandadze@gmail.com</string>
     <string name="text_theme" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="message_for_developers" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>

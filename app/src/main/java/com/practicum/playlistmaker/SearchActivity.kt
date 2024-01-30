@@ -1,11 +1,12 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -15,8 +16,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,33 +85,27 @@ class SearchActivity : AppCompatActivity() {
             updateButton?.visibility = View.GONE
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
-            // adapterHistory.notifyItemRemoved(0)
-            //adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
+
         }
         //Наблюдатель Текста
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchText = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
-
                 if (inputEditText.hasFocus() && s?.isEmpty() == true && adapterHistory.tracks.isNotEmpty()) {
                     historySearchHead.isVisible = true
                 }
             }
-
             override fun afterTextChanged(s: Editable?) {
                 // empty
             }
         }
-
         inputEditText.addTextChangedListener(simpleTextWatcher)
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
-
             if (hasFocus && inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()) {
                 historySearchHead.isVisible = true
             }
@@ -124,6 +121,7 @@ class SearchActivity : AppCompatActivity() {
                 adapterHistory.tracks = searchHistory.loadTracks()
                 adapterHistory.notifyItemRemoved(0)
                 adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
+                transition(track)
             }
         }
 
@@ -132,11 +130,12 @@ class SearchActivity : AppCompatActivity() {
 
         val onClickHistoryTrack = object : ClickListernForTrack {
             override fun onTrackClickListern(track: Track) {
-                val position = adapterHistory.tracks.indexOf(track)
-                adapterHistory.tracks.remove(track)
-                searchHistory.saveTrackToJson(adapterHistory.tracks)
-                adapterHistory.notifyItemRemoved(position)
-                adapterHistory.notifyItemRangeChanged(position, adapterHistory.tracks.size)
+                transition(track)
+                    // val position = adapterHistory.tracks.indexOf(track)
+               // adapterHistory.tracks.remove(track)
+               // searchHistory.saveTrackToJson(adapterHistory.tracks)
+               // adapterHistory.notifyItemRemoved(position)
+               // adapterHistory.notifyItemRangeChanged(position, adapterHistory.tracks.size)
 
                 if (adapterHistory.tracks.isEmpty()) {
                     historySearchHead.visibility = View.GONE
@@ -208,8 +207,9 @@ class SearchActivity : AppCompatActivity() {
                     placeholderMessage?.text = getString(R.string.error_internet)
                     imagePH?.setImageResource(R.drawable.error_internet)
                     adapter.notifyDataSetChanged()
-                    Toast.makeText(applicationContext, "Нет интернета", Toast.LENGTH_LONG)
+                    Toast.makeText(applicationContext, "Нет интернета", Toast.LENGTH_SHORT)
                         .show()
+                    Log.e("NetworkError", "Error during network request: ${t.message}")
                 }
             })
         }
@@ -217,7 +217,6 @@ class SearchActivity : AppCompatActivity() {
 
 
     override fun onSaveInstanceState(outState: Bundle) {
-
         outState.putString(QUERY_VALUE, searchText)
         super.onSaveInstanceState(outState)
     }
@@ -236,9 +235,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    fun transition(track:Track){
+        val trackJson = Gson().toJson(track)
+        val intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra(TRANSITION,trackJson)
+        startActivity(intent)
+
+    }
     companion object {
         private const val QUERY_VALUE = "QUERY_VALUE"
-        const val SHARED_PREF_ITEM = "SHARED_PREF_KEY"
+        private const val SHARED_PREF_ITEM = "SHARED_PREF_KEY"
+        private const val TRANSITION = "TRANSITION"
     }
 }
 
