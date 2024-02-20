@@ -3,8 +3,9 @@
     <LinearLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
-
+        xmlns:tools="http://schemas.android.com/tools"
         style="@style/HeadBox"
+
         android:padding="@dimen/padding_for_layout">
         <TextView
             android:layout_width="wrap_content"
@@ -34,11 +35,10 @@
                 app:iconSize="@dimen/primary_text_size"
                 app:iconGravity="textStart"
                 app:iconPadding="@dimen/standart_padding"
-
+                android:backgroundTint="@color/white"
                 android:layout_marginVertical="@dimen/standart_padding"
                 android:text="@string/button_search"
                 app:icon="@drawable/search"
-
                 />
 
             <com.google.android.material.button.MaterialButton
@@ -56,7 +56,7 @@
                 android:layout_marginVertical="@dimen/standart_padding"
                 android:text="@string/button_media_library"
                 app:icon="@drawable/tracks"
-               />
+                tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MenuButtons"
@@ -74,7 +74,6 @@
                 android:layout_marginVertical="@dimen/standart_padding"
                 android:text="@string/button_setting"
                 app:icon="@drawable/set"
-
                 />
         </LinearLayout>
 
