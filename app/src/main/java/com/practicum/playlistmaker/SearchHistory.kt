@@ -38,10 +38,8 @@ class SearchHistory(private  val sharedPref:SharedPreferences) {
             .apply()
     }
 
-
-
     companion object{
-        const val HISTORY_KEY = "SEARCH_HISTORY_KEY"
+        private const val HISTORY_KEY = "SEARCH_HISTORY_KEY"
         private const val MAX_INDEX = 10
     }
 
