@@ -1,75 +1,146 @@
 package com.practicum.playlistmaker
 
-
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.practicum.playlistmaker.databinding.AudioPlayerBinding
 
+
+@Suppress("DEPRECATION")
 class AudioPlayerActivity : AppCompatActivity() {
 
-    var duration: TextView? = null
-    var album: TextView? = null
-    var year: TextView? = null
-    var genre: TextView? = null
-    var country: TextView? = null
-    var time: TextView? = null
+    private var _binding: AudioPlayerBinding? = null
+    private val binding
+        get() = _binding
+            ?: throw IllegalStateException("Binding for ActivitySearchBinding must be not null")
+
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var mainThreadHandler = Handler(Looper.getMainLooper())
+    private var track: Track? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.audio_player)
+        _binding = AudioPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val back = findViewById<ImageView>(R.id.backButton)
-        val playAndPause = findViewById<ImageView>(R.id.btn_play_pause)
-        val imAlbum = findViewById<ImageView>(R.id.image_album)
-        val trackName = findViewById<TextView>(R.id.title_album)
-        val nameArtist = findViewById<TextView>(R.id.title_artist)
-        val addBtn = findViewById<ImageView>(R.id.btn_add)
-        val likeBtn = findViewById<ImageView>(R.id.btn_favourite)
-        time = findViewById(R.id.time)
-        duration = findViewById(R.id.item_duration)
-        album = findViewById(R.id.item_album)
-        year = findViewById(R.id.item_year)
-        genre = findViewById(R.id.item_genre)
-        country = findViewById(R.id.item_country)
-
-        val trackJson = intent.getStringExtra("TRANSITION")
-        val track = Gson().fromJson(trackJson, Track::class.java)
-
-        country?.text = track.country
-        genre?.text = track.primaryGenreName
-        year?.text = track.releaseDate
-        nameArtist?.text = track.artistName
-        duration?.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        time?.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        trackName?.text = track.trackName
-
-        if (!track.collectionName.isNullOrBlank()) {
-            album?.text = track.collectionName
-        } else {
-            album?.isVisible = false
-        }
-
-        val coverArtworkUrl = track.getCoverArtwork()
-
-        Glide.with(this)
-            .load(coverArtworkUrl)
-            .centerCrop()
-            .transform(RoundedCorners(16))
-            .placeholder(R.drawable.placeholder_ap)
-            .into(imAlbum)
-
-        //Кнопка назад
-        back.setOnClickListener {
-            finish()
-        }
+        track = intent.getParcelableExtra(SearchActivity.TRANSITION)
+        setupUi()
+        setupImage(track)
+        preparePlayer()
 
     }
 
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+                mainThreadHandler.removeCallbacks(runnable())
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+                mainThreadHandler.post(runnable())
+            }
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playerState = STATE_PLAYING
+        binding.btnPlayPause.setImageResource(R.drawable.pause)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playerState = STATE_PAUSED
+        binding.btnPlayPause.setImageResource(R.drawable.play)
+    }
+
+    private fun preparePlayer() {
+        mediaPlayer.apply {
+            setDataSource(track?.previewUrl)
+            prepareAsync()
+            setOnPreparedListener {
+                binding.btnPlayPause.isEnabled = true
+                mainThreadHandler.post(runnable())
+                startPlayer()
+            }
+            setOnCompletionListener {
+                playerState = STATE_PREPARED
+
+                binding.time.text = getString(R.string.time_zero)
+                binding.btnPlayPause.setImageResource(R.drawable.play)
+
+
+            }
+        }
+    }
+
+    private fun runnable(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                if (playerState == STATE_PLAYING) {
+                    binding.time.text = track?.formatDuration(mediaPlayer.currentPosition.toLong())
+                    mainThreadHandler.postDelayed(this, 300)
+                }
+            }
+        }
+    }
+
+    private fun setupUi() {
+        track?.let { track ->
+            with(binding) {
+                itemCountry.text = track.country
+                itemGenre.text = track.primaryGenreName
+                itemYear.text = track.releaseDate.formatYear()
+                titleArtist.text = track.artistName
+                itemDuration.text = track.formatDuration(track.trackTimeMillis)
+                titleAlbum.text = track.trackName
+                backButton.setOnClickListener {
+                    finish()
+                }
+                binding.btnPlayPause.setOnClickListener {
+                    playbackControl()
+                }
+            }
+            binding.itemAlbum.isVisible = track.collectionName.isNotBlank()
+            binding.itemAlbum.text = track.collectionName
+        }
+    }
+
+    private fun setupImage(track: Track?) {
+        val coverArtworkUrl = track?.getCoverArtwork()
+        Glide.with(this)
+            .load(coverArtworkUrl)
+            .centerCrop()
+            .transform(RoundedCorners(RADIUS))
+            .placeholder(R.drawable.placeholder_ap)
+            .into(binding.imageAlbum)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        _binding = null
+    }
+
+    companion object {
+        private const val RADIUS = 16
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
 }
+    
+
