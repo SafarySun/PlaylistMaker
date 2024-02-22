@@ -25,11 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
-    private var _binding: ActivitySearchBinding? = null
-    private val binding
-        get() = _binding
-            ?: throw IllegalStateException("Binding for ActivitySearchBinding must be not null")
-
+    private lateinit var binding: ActivitySearchBinding
     private var searchText = "VALUE_DEF"
     private val trackBaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -47,7 +43,7 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivitySearchBinding.inflate(layoutInflater)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         sharedPref = getSharedPreferences(SHARED_PREF_ITEM, MODE_PRIVATE)
@@ -157,7 +153,6 @@ class SearchActivity : AppCompatActivity() {
             binding.historyHead.visibility = View.GONE
             val call = searchService.search(querySearch)
             call.enqueue(object : Callback<TrackResponse> {
-                @SuppressLint("NotifyDataSetChanged")
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>
@@ -245,10 +240,6 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
 
     companion object {
         private const val QUERY_VALUE = "QUERY_VALUE"

@@ -11,23 +11,21 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.databinding.AudioPlayerBinding
 
 
-@Suppress("DEPRECATION")
+
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private var _binding: AudioPlayerBinding? = null
-    private val binding
-        get() = _binding
-            ?: throw IllegalStateException("Binding for ActivitySearchBinding must be not null")
-
+    private lateinit var  binding :AudioPlayerBinding
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler = Handler(Looper.getMainLooper())
     private var track: Track? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = AudioPlayerBinding.inflate(layoutInflater)
+        binding = AudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        @Suppress("DEPRECATION")
         track = intent.getParcelableExtra(SearchActivity.TRANSITION)
         setupUi()
         setupImage(track)
@@ -67,12 +65,10 @@ class AudioPlayerActivity : AppCompatActivity() {
             prepareAsync()
             setOnPreparedListener {
                 binding.btnPlayPause.isEnabled = true
-                mainThreadHandler.post(runnable())
-                startPlayer()
+                playerState = STATE_PREPARED
             }
             setOnCompletionListener {
                 playerState = STATE_PREPARED
-
                 binding.time.text = getString(R.string.time_zero)
                 binding.btnPlayPause.setImageResource(R.drawable.play)
 
@@ -101,6 +97,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 titleArtist.text = track.artistName
                 itemDuration.text = track.formatDuration(track.trackTimeMillis)
                 titleAlbum.text = track.trackName
+                binding.time.text = track?.formatDuration(mediaPlayer.currentPosition.toLong())
                 backButton.setOnClickListener {
                     finish()
                 }
@@ -131,7 +128,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-        _binding = null
+
     }
 
     companion object {
