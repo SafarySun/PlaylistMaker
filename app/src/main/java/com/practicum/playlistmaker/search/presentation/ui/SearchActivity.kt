@@ -16,7 +16,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.practicum.playlistmaker.audioplayer.presentation.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
+import com.practicum.playlistmaker.search.data.dto.TrackResponse
+import com.practicum.playlistmaker.search.data.network.PlayListApi
+import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.presentation.ui.ClickListernForTrack
+import com.practicum.playlistmaker.search.presentation.ui.SearchHistory
+import com.practicum.playlistmaker.search.presentation.ui.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -249,5 +256,3 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
-
-

@@ -1,6 +1,7 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.search.presentation.ui
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.practicum.playlistmaker.search.domain.models.Track
 
 class SearchHistory(private  val sharedPref:SharedPreferences) {
 
@@ -22,7 +23,7 @@ class SearchHistory(private  val sharedPref:SharedPreferences) {
 }
 
     // проверяем обьекты в ШП и добавляем их в историю
-    fun addTrackToHistory(track:Track){
+    fun addTrackToHistory(track: Track){
         if(savedHistory.size >= MAX_INDEX) {
             savedHistory.removeAt(savedHistory.size -1)
         }

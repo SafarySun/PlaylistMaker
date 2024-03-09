@@ -1,18 +1,22 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.audioplayer.presentation.ui
 
+import android.app.Activity
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.AudioPlayerBinding
+import com.practicum.playlistmaker.formatDuration
+import com.practicum.playlistmaker.formatYear
+import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.presentation.ui.SearchActivity
 
 
-
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : Activity() {
 
     private lateinit var  binding :AudioPlayerBinding
     private var playerState = STATE_DEFAULT
@@ -29,7 +33,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         track = intent.getParcelableExtra(SearchActivity.TRANSITION)
         setupUi()
         setupImage(track)
-        preparePlayer()
+        preparePlayer(track?.previewUrl)
 
     }
 
@@ -59,9 +63,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.btnPlayPause.setImageResource(R.drawable.play)
     }
 
-    private fun preparePlayer() {
+    private fun preparePlayer(previewUrl:String?) {
         mediaPlayer.apply {
-            setDataSource(track?.previewUrl)
+            setDataSource(previewUrl)
             prepareAsync()
             setOnPreparedListener {
                 binding.btnPlayPause.isEnabled = true
@@ -71,8 +75,6 @@ class AudioPlayerActivity : AppCompatActivity() {
                 playerState = STATE_PREPARED
                 binding.time.text = getString(R.string.time_zero)
                 binding.btnPlayPause.setImageResource(R.drawable.play)
-
-
             }
         }
     }
@@ -139,5 +141,5 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val STATE_PAUSED = 3
     }
 }
-    
+
 
