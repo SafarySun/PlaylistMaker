@@ -1,14 +1,15 @@
 package com.practicum.playlistmaker.audioplayer.presentation.ui
 
-import android.app.Activity
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.audioplayer.domain.OnpreparedOnCompletion
 import com.practicum.playlistmaker.databinding.AudioPlayerBinding
 import com.practicum.playlistmaker.formatDuration
 import com.practicum.playlistmaker.formatYear
@@ -16,105 +17,79 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.presentation.ui.SearchActivity
 
 
-class AudioPlayerActivity : Activity() {
-
-    private lateinit var  binding :AudioPlayerBinding
-    private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
+class AudioPlayerActivity : AppCompatActivity() {
+    private lateinit var binding: AudioPlayerBinding
+    private val interactorImpl = Creator.getInteractorPlayer()
     private var mainThreadHandler = Handler(Looper.getMainLooper())
-    private var track: Track? = null
+    private lateinit var track: Track
+    private lateinit var timerRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         @Suppress("DEPRECATION")
-        track = intent.getParcelableExtra(SearchActivity.TRANSITION)
+        track = intent.getParcelableExtra(SearchActivity.TRANSITION)!!
         setupUi()
         setupImage(track)
-        preparePlayer(track?.previewUrl)
+        setupTimer()
 
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-                mainThreadHandler.removeCallbacks(runnable())
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-                mainThreadHandler.post(runnable())
-            }
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = STATE_PLAYING
-        binding.btnPlayPause.setImageResource(R.drawable.pause)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        binding.btnPlayPause.setImageResource(R.drawable.play)
-    }
-
-    private fun preparePlayer(previewUrl:String?) {
-        mediaPlayer.apply {
-            setDataSource(previewUrl)
-            prepareAsync()
-            setOnPreparedListener {
+        interactorImpl.preparePlayer(track.previewUrl, listner = object : OnpreparedOnCompletion {
+            override fun onPrepared() {
                 binding.btnPlayPause.isEnabled = true
-                playerState = STATE_PREPARED
             }
-            setOnCompletionListener {
-                playerState = STATE_PREPARED
+
+            override fun onCompletion() {
                 binding.time.text = getString(R.string.time_zero)
                 binding.btnPlayPause.setImageResource(R.drawable.play)
             }
-        }
-    }
-
-    private fun runnable(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if (playerState == STATE_PLAYING) {
-                    binding.time.text = track?.formatDuration(mediaPlayer.currentPosition.toLong())
-                    mainThreadHandler.postDelayed(this, 300)
-                }
-            }
-        }
+        })
     }
 
     private fun setupUi() {
-        track?.let { track ->
-            with(binding) {
-                itemCountry.text = track.country
-                itemGenre.text = track.primaryGenreName
-                itemYear.text = track.releaseDate.formatYear()
-                titleArtist.text = track.artistName
-                itemDuration.text = track.formatDuration(track.trackTimeMillis)
-                titleAlbum.text = track.trackName
-                binding.time.text = track?.formatDuration(mediaPlayer.currentPosition.toLong())
-                backButton.setOnClickListener {
-                    finish()
-                }
-                binding.btnPlayPause.setOnClickListener {
-                    playbackControl()
-                }
+        binding.backButton.setOnClickListener {
+            finish()
+        }
+        with(binding) {
+            itemCountry.text = track.country
+            itemGenre.text = track.primaryGenreName
+            itemYear.text = track.releaseDate.formatYear()
+            titleArtist.text = track.artistName
+            itemDuration.text = formatDuration(track.trackTimeMillis)
+            titleAlbum.text = track.trackName
+            time.text = formatDuration(interactorImpl.provideCurrentPosition().toLong())
+            btnPlayPause.setOnClickListener {
+                playbackControl()
             }
-            binding.itemAlbum.isVisible = track.collectionName.isNotBlank()
-            binding.itemAlbum.text = track.collectionName
+            itemAlbum.isVisible = track.collectionName.isNotBlank()
+            itemAlbum.text = track.collectionName
         }
     }
 
-    private fun setupImage(track: Track?) {
-        val coverArtworkUrl = track?.getCoverArtwork()
-        Glide.with(this)
+    private fun playbackControl() {
+        if (interactorImpl.isPlaying()) {
+            interactorImpl.pausePlayer()
+            mainThreadHandler.removeCallbacks(timerRunnable)
+            binding.btnPlayPause.setImageResource(R.drawable.play)
+        } else {
+            interactorImpl.startPlayer()
+            binding.btnPlayPause.setImageResource(R.drawable.pause)
+            mainThreadHandler.post(timerRunnable)
+        }
+    }
+
+    private fun setupTimer() {
+        timerRunnable = Runnable {
+            if (interactorImpl.isPlaying()) {
+                binding.time.text = formatDuration(interactorImpl.provideCurrentPosition().toLong())
+                mainThreadHandler.postDelayed(timerRunnable, 300)
+            }
+        }
+    }
+
+    private fun setupImage(track: Track) {
+        val coverArtworkUrl = track.getCoverArtwork()
+        Glide.with(binding.imageAlbum)
             .load(coverArtworkUrl)
             .centerCrop()
             .transform(RoundedCorners(RADIUS))
@@ -124,21 +99,17 @@ class AudioPlayerActivity : Activity() {
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        interactorImpl.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        interactorImpl.release()
 
     }
 
     companion object {
         private const val RADIUS = 16
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
 }
 

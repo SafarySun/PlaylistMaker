@@ -39,7 +39,7 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         tvArtistName.text = item.artistName
         tvArtistName.requestLayout()
         tvTrackName.text = item.trackName
-        tvTrackTime.text = item.formatDuration(item.trackTimeMillis)
+        tvTrackTime.text = formatDuration(item.trackTimeMillis)
 
 
     }

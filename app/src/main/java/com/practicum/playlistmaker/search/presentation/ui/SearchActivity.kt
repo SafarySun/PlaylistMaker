@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.search.presentation.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,37 +9,25 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.audioplayer.presentation.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.search.data.dto.TrackResponse
-import com.practicum.playlistmaker.search.data.network.PlayListApi
+import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.presentation.ui.ClickListernForTrack
-import com.practicum.playlistmaker.search.presentation.ui.SearchHistory
-import com.practicum.playlistmaker.search.presentation.ui.TrackAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
+    private val creator = Creator
+    private val trackImpl = creator.provideTrackInteractor()
+
     private lateinit var binding: ActivitySearchBinding
     private var searchText = "VALUE_DEF"
-    private val trackBaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(trackBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val searchService = retrofit.create(PlayListApi::class.java)
     private val adapter = TrackAdapter()
     private val adapterHistory = TrackAdapter()
     private lateinit var sharedPref: SharedPreferences
@@ -155,23 +143,20 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchInApi() {
         val querySearch = binding.inputEditText.text.toString().trim()
-        if (querySearch.isNotEmpty()) {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.historyHead.visibility = View.GONE
-            val call = searchService.search(querySearch)
-            call.enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
-                ) {
-                    binding.progressBar.visibility = View.GONE
-                    if (response.code() == 200) {
+
+        trackImpl.searchTracks(querySearch,object : TrackInteractor.TrackConsumer {
+            override fun consume(foundTracks: List<Track>) {
+                runOnUiThread {
+                    if (foundTracks.isNotEmpty()) {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.historyHead.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
+
                         adapter.tracks.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            adapter.tracks.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
-                            binding.placeholderHead.visibility = View.GONE
-                        }
+                        adapter.tracks.addAll(foundTracks)
+                        adapter.notifyDataSetChanged()
+                        binding.placeholderHead.visibility = View.GONE
+
                         if (adapter.tracks.isEmpty()) {
                             adapter.tracks.clear()
                             with(binding) {
@@ -192,67 +177,68 @@ class SearchActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
                     }
                 }
+            }
 
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    adapter.tracks.clear()
-                    with(binding) {
-                        progressBar.visibility = View.GONE
-                        placeholderHead.visibility = View.VISIBLE
-                        buttonUpdate.visibility = View.VISIBLE
-                        placeholderMessage.text = getString(R.string.error_internet)
-                        imageError.setImageResource(R.drawable.error_internet)
-                    }
-                    adapter.notifyDataSetChanged()
-                    Toast.makeText(applicationContext, "Нет интернета", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.e("NetworkError", "Error during network request: ${t.message}")
+         /* @SuppressLint("NotifyDataSetChanged")
+            override fun onFailure(t: Throwable) {
+                adapter.tracks.clear()
+                with(binding) {
+                    progressBar.visibility = View.GONE
+                    placeholderHead.visibility = View.VISIBLE
+                    buttonUpdate.visibility = View.VISIBLE
+                    placeholderMessage.text = getString(R.string.error_internet)
+                    imageError.setImageResource(R.drawable.error_internet)
                 }
-            })
-        }
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(QUERY_VALUE, searchText)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(QUERY_VALUE, "")
-    }
-
-    //Функция - Видимость опз
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
-
-    private fun transition(track: Track) {
-        val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra(TRANSITION, track)
-        startActivity(intent)
-
+                adapter.notifyDataSetChanged()
+                Toast.makeText(applicationContext, "Нет интернета", Toast.LENGTH_SHORT)
+                    .show()
+                Log.e("NetworkError", "Error during network request: ${t.message}")
+            }*/
+        })
     }
 
 
-    companion object {
-        private const val QUERY_VALUE = "QUERY_VALUE"
-        private const val SHARED_PREF_ITEM = "SHARED_PREF_KEY"
-        const val TRANSITION = "TRANSITION"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+private fun clickDebounce(): Boolean {
+    val current = isClickAllowed
+    if (isClickAllowed) {
+        isClickAllowed = false
+        handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
     }
+    return current
+}
+
+override fun onSaveInstanceState(outState: Bundle) {
+    outState.putString(QUERY_VALUE, searchText)
+    super.onSaveInstanceState(outState)
+}
+
+override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    super.onRestoreInstanceState(savedInstanceState)
+    searchText = savedInstanceState.getString(QUERY_VALUE, "")
+}
+
+//Функция - Видимость опз
+private fun clearButtonVisibility(s: CharSequence?): Int {
+    return if (s.isNullOrEmpty()) {
+        View.GONE
+    } else {
+        View.VISIBLE
+    }
+}
+
+private fun transition(track: Track) {
+    val intent = Intent(this, AudioPlayerActivity::class.java)
+    intent.putExtra(TRANSITION, track)
+    startActivity(intent)
+
+}
+
+
+companion object {
+    private const val QUERY_VALUE = "QUERY_VALUE"
+    private const val SHARED_PREF_ITEM = "SHARED_PREF_KEY"
+    const val TRANSITION = "TRANSITION"
+    private const val CLICK_DEBOUNCE_DELAY = 1000L
+    private const val SEARCH_DEBOUNCE_DELAY = 2000L
+}
 }

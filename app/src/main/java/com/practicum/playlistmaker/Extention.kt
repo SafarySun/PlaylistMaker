@@ -1,10 +1,9 @@
 package com.practicum.playlistmaker
-import com.practicum.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 // Расширение для форматирования длительности трека
-fun Track.formatDuration(time:Long): String {
+fun formatDuration(time: Long): String {
     return  SimpleDateFormat("mm:ss", Locale.getDefault()).format(time).toString()
 }
 
