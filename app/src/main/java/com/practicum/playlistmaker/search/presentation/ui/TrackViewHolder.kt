@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.search.presentation.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,6 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.formatDuration
+import com.practicum.playlistmaker.search.domain.models.Track
+
 
 class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater
@@ -35,7 +39,7 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         tvArtistName.text = item.artistName
         tvArtistName.requestLayout()
         tvTrackName.text = item.trackName
-        tvTrackTime.text = item.formatDuration(item.trackTimeMillis)
+        tvTrackTime.text = formatDuration(item.trackTimeMillis)
 
 
     }
