@@ -1,9 +1,14 @@
-package com.practicum.playlistmaker.search.presentation.ui
+package com.practicum.playlistmaker.search.data.sharedprefs
+import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.practicum.playlistmaker.search.domain.models.Track
 
-class SearchHistory(private  val sharedPref:SharedPreferences) {
+class LocalStorage(private val context: Context) {
+
+    private val sharedPref: SharedPreferences by lazy {
+        context.getSharedPreferences(HISTORY, Context.MODE_PRIVATE)
+    }
 
 // сохраняем треки в ШП
  private val savedHistory = loadTracks()
@@ -44,6 +49,7 @@ class SearchHistory(private  val sharedPref:SharedPreferences) {
     companion object{
         const val HISTORY_KEY = "SEARCH_HISTORY_KEY"
         private const val MAX_INDEX = 10
+        const val HISTORY = "HISTORY"
     }
 
 }

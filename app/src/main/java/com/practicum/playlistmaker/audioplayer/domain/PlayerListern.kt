@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.audioplayer.domain
 
-interface OnpreparedOnCompletion {
+interface PlayerListern {
     fun onPrepared()
     fun onCompletion()
 }

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".search.presentation.ui.SearchActivity">
+    android:orientation="vertical">
 
 
     <LinearLayout style="@style/ToolbarBox">
@@ -152,7 +151,7 @@
         android:layout_marginTop="@dimen/frame_padding24"
         android:paddingBottom="@dimen/frame_padding24"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         >
 
         <TextView

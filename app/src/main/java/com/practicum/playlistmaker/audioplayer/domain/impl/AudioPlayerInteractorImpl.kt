@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.audioplayer.domain.impl
 
-import com.practicum.playlistmaker.audioplayer.domain.OnpreparedOnCompletion
+import com.practicum.playlistmaker.audioplayer.domain.PlayerListern
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraktor
 
@@ -17,9 +17,8 @@ class AudioPlayerInteractorImpl(private val player:AudioPlayer):AudioPlayerInter
         player.pausePlayer()
     }
 
-    override fun preparePlayer(previewUrl: String,listner:OnpreparedOnCompletion) {
+    override fun preparePlayer(previewUrl: String,listner:PlayerListern) {
         player.preparePlayer(previewUrl,listner)
-
 
     }
     override fun release() {
@@ -29,9 +28,6 @@ class AudioPlayerInteractorImpl(private val player:AudioPlayer):AudioPlayerInter
        return player.provideCurrentPosition()
     }
 
-    override fun provideState(): PlayerState {
-       return player.provideState()
-    }
 
     override fun isPlaying(): Boolean = player.isPlaying()
 
