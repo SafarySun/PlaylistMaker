@@ -9,10 +9,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
@@ -23,7 +22,7 @@ import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.ui.model.TrackState
 
 
-class SearchActivity : ComponentActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private val adapterHistory = TrackAdapter(
         object : ClickListernForTrack {
@@ -53,7 +52,8 @@ class SearchActivity : ComponentActivity() {
 
 
     private val viewModel by lazy {
-        ViewModelProvider(this, SearchViewModel.getViewModelFactory()
+        ViewModelProvider(
+            this, SearchViewModel.getViewModelFactory()
         )[SearchViewModel::class.java]
     }
 
@@ -113,7 +113,7 @@ class SearchActivity : ComponentActivity() {
                     showEmpty()
                 }
 
-                }
+            }
 
 
             override fun afterTextChanged(s: Editable?) {
@@ -122,10 +122,12 @@ class SearchActivity : ComponentActivity() {
         }
         textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
 
-
+// ochistit history
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
-            adapterHistory.tracks.clear()
+            adapterHistory.tracks = viewModel.getHistory()
+            adapterHistory.notifyDataSetChanged()
+
             showEmpty()
 
         }
@@ -188,7 +190,7 @@ class SearchActivity : ComponentActivity() {
         binding.historyHead.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.rvHistory.visibility = View.GONE
-        Log.d("SHOW","EMTY")
+        Log.d("SHOW", "EMTY")
     }
 
     private fun showLoading() {

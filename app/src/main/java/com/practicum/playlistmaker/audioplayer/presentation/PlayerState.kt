@@ -1,8 +1,8 @@
 package com.practicum.playlistmaker.audioplayer.presentation
 
-enum class PlayerState {
-    STATE_DEFAULT,
-    STATE_PREPARED,
-    STATE_PLAYING,
-    STATE_PAUSED
+sealed class PlayerState {
+    object Default : PlayerState()
+    data class Play( val progress : Long) : PlayerState()
+    object Pause : PlayerState()
+    object Prepared : PlayerState()
 }

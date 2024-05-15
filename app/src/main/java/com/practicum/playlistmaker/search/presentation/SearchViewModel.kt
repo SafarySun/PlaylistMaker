@@ -34,12 +34,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         if (getHistory().isNotEmpty()) renderState(TrackState.HistoryContent(getHistory())) else TrackState.HistoryEmpty
     }
 
-    private fun getHistory(): ArrayList<Track> =  moviesInteractor.getHistory()      // polu4aem treki iz sharedpref
+     fun getHistory(): ArrayList<Track> =  moviesInteractor.getHistory()      // polu4aem treki iz sharedpref
 
     fun addTrackToHistory(track: Track) = moviesInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
 
-    fun clearHistory() = moviesInteractor.clearHistory()
-
+    fun clearHistory() {
+        moviesInteractor.clearHistory()
+        renderState(TrackState.HistoryEmpty)
+    }
 
     fun observeState(): LiveData<TrackState> = stateLiveData // konvertiruem LD v nemutable
     private fun renderState(state: TrackState) {              //menyaem State

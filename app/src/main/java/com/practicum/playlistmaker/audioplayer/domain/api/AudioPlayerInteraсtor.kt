@@ -1,13 +1,12 @@
 package com.practicum.playlistmaker.audioplayer.domain.api
 
-interface AudioPlayer {
-
-    fun startPlayer()
+interface AudioPlayerInteraсtor {
     fun reset()
+    fun startPlayer()
     fun pausePlayer()
-    fun preparePlayer(previewUrl:String,listner: PlayerListern)
+    fun preparePlayer(previewUrl: String, listner: PlayerListern)
     fun release()
     fun provideCurrentPosition(): Int
 
-    fun isPlaying():Boolean
-    }
+    fun isPlaying(): Boolean
+}

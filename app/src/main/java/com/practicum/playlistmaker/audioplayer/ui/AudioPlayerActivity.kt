@@ -7,24 +7,21 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.audioplayer.domain.PlayerListern
+import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListern
 import com.practicum.playlistmaker.audioplayer.presentation.PlayerState
 import com.practicum.playlistmaker.audioplayer.presentation.PlayerViewModel
+import com.practicum.playlistmaker.audioplayer.presentation.TrackScreenState
 import com.practicum.playlistmaker.databinding.AudioPlayerBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchActivity
 import com.practicum.playlistmaker.utils.creator.formatDuration
 import com.practicum.playlistmaker.utils.creator.formatYear
 
-@Suppress("DEPRECATION")
+
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: AudioPlayerBinding
     private lateinit var track: Track
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this, PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
-    }
+    private lateinit var viewModel: PlayerViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,30 +29,82 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = AudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnPlayPause.isEnabled = false
+
         track = intent.getParcelableExtra(SearchActivity.TRANSITION)!!
 
-        viewModel.getPlayerState().observe(this) {
+        val previewUrl = track.previewUrl
 
-            if(viewModel.getPlayerState().value == PlayerState.STATE_DEFAULT)
+        val listener = object : PlayerListern {
+            override fun onPrepared() {
+                binding.btnPlayPause.isEnabled = true
 
-            viewModel.preparePlayer(track.previewUrl, listner = object : PlayerListern { //
-                override fun onPrepared() {
-                    binding.btnPlayPause.isEnabled = true
+            }
+
+            override fun onCompletion() {
+                binding.time.text = getString(R.string.time_zero)
+                binding.btnPlayPause.setImageResource(R.drawable.play)
+            }
+        }
+        viewModel = ViewModelProvider(
+            this, PlayerViewModel.getViewModelFactory(track,previewUrl, listener)
+        )[PlayerViewModel::class.java]
+
+        viewModel.getScreenState().observe(this) {
+            when (it) {
+                TrackScreenState.Loading -> changeContentVisibility(false)
+
+                TrackScreenState.Content(track) -> {
+                    changeContentVisibility(true)
+                    setupUi()
+                    setupImage(track)
+
                 }
-                override fun onCompletion() {
-                    binding.time.text = getString(R.string.time_zero)
+                else -> {}
+            }
+        }
+        viewModel.getPlayerState().observe(this) {
+            when (it) {
+
+                PlayerState.Default -> {
+                    binding.btnPlayPause.isEnabled = false
                     binding.btnPlayPause.setImageResource(R.drawable.play)
                 }
-            })
+                PlayerState.Prepared -> {
+                    binding.btnPlayPause.setImageResource(R.drawable.play)
+                    binding.time.text = getString(R.string.time_zero)
+                }
+
+                is PlayerState.Play -> {
+                    binding.btnPlayPause.isEnabled = true
+                    binding.btnPlayPause.setImageResource(if (viewModel.isPlaying()) R.drawable.pause else R.drawable.play)
+                    binding.time.text = formatDuration(viewModel.provideCurrentPosition())
+                }
+                PlayerState.Pause -> {
+                    binding.btnPlayPause.isEnabled = true
+                    binding.btnPlayPause.setImageResource(R.drawable.play)
+                    binding.time.text = formatDuration(viewModel.provideCurrentPosition())
+                }
+            }
         }
-
-
-        setupUi()
-        setupImage(track)
-       setupTimer()
-
-
     }
+
+
+    private fun changeContentVisibility(hasContent: Boolean) {
+        with(binding) {
+            itemCountry.isVisible = hasContent
+            itemGenre.isVisible = hasContent
+            itemYear.isVisible = hasContent
+            titleArtist.isVisible = hasContent
+            itemDuration.isVisible = hasContent
+            titleAlbum.isVisible = hasContent
+            time.isVisible = hasContent
+            btnPlayPause.isVisible = hasContent
+            itemAlbum.isVisible = hasContent
+            progressBar.isVisible = !hasContent
+        }
+    }
+
 
     private fun setupUi() {
         binding.backButton.setOnClickListener {
@@ -68,10 +117,9 @@ class AudioPlayerActivity : AppCompatActivity() {
             titleArtist.text = track.artistName
             itemDuration.text = formatDuration(track.trackTimeMillis)
             titleAlbum.text = track.trackName
-            time.text = formatDuration(viewModel.provideCurrentPosition().toLong())
+            binding.time.text = getString(R.string.time_zero)
             btnPlayPause.setOnClickListener {
                 playbackControl()
-
             }
             itemAlbum.isVisible = track.collectionName.isNotBlank()
             itemAlbum.text = track.collectionName
@@ -88,36 +136,17 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupTimer() {
-       // viewModel.setupTimer()
-        binding.time.text = formatDuration(viewModel.provideCurrentPosition().toLong())
-
+    private fun setupImage(track: Track) {
+        val coverArtworkUrl = track.getCoverArtwork()
+        Glide.with(binding.imageAlbum)
+            .load(coverArtworkUrl)
+            .centerCrop()
+            .transform(RoundedCorners(RADIUS))
+            .placeholder(R.drawable.placeholder_ap)
+            .into(binding.imageAlbum)
     }
 
-
-
-private fun setupImage(track: Track) {
-    val coverArtworkUrl = track.getCoverArtwork()
-    Glide.with(binding.imageAlbum)
-        .load(coverArtworkUrl)
-        .centerCrop()
-        .transform(RoundedCorners(RADIUS))
-        .placeholder(R.drawable.placeholder_ap)
-        .into(binding.imageAlbum)
-}
-
-override fun onPause() {
-    super.onPause()
-    viewModel.pausePlayer()
-}
-
-override fun onDestroy() {
-    super.onDestroy()
-    viewModel.release()
-
-}
-
-companion object {
-    private const val RADIUS = 16
-}
+    companion object {
+        private const val RADIUS = 16
+    }
 }

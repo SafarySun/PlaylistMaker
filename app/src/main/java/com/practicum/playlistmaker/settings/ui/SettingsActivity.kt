@@ -33,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
         //Переключение режима Ночной-Дневной
 
         binding.btnSwitchTheme.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateThemeSetting(isChecked)
+            viewModel.switchTheme(isChecked)
         }
 
         //Реализовать кнопку «Написать в поддержку»:
@@ -49,6 +49,11 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnAgeement.setOnClickListener {
             viewModel.openTerms()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.updateThemeSetting()
     }
 
 

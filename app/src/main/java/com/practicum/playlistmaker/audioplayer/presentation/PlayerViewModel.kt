@@ -1,49 +1,61 @@
 package com.practicum.playlistmaker.audioplayer.presentation
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.audioplayer.domain.PlayerListern
+import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListern
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.creator.Creator
 
-class PlayerViewModel(application: Application) : AndroidViewModel(application) {
+class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerListern) : ViewModel() {
 
-    private lateinit var timerRunnable: Runnable
+    private val timerRunnable: Runnable = object : Runnable {
+        override fun run() {
+                playerState.postValue(PlayerState.Play(provideCurrentPosition()))
+                mainThreadHandler.postDelayed(this, 300)
+            }
+        }
+
     private val interactorImpl = Creator.getInteractorPlayer()
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
-    private val playerState = MutableLiveData<PlayerState>()
 
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+
+    private var playerState = MutableLiveData<PlayerState>()
+
+    private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
 
     init {
-        setupTimer() // Инициализация timerRunnable при создании ViewModel
+            preparePlayer(previewUrl, listener)
+            screenState.postValue(TrackScreenState.Content(track))
+
     }
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
+    fun getScreenState(): LiveData<TrackScreenState> = screenState
     private fun renderState(state: PlayerState) {
         playerState.postValue(state)
     }
 
     //podgotovka mp
-    fun preparePlayer(previewUrl: String, listner: PlayerListern) {
+    private fun preparePlayer(previewUrl: String, listner: PlayerListern) {
         interactorImpl.preparePlayer(previewUrl, listner)
-        renderState(PlayerState.STATE_PREPARED)
+        renderState(PlayerState.Prepared)
     }
 
     // nazhatie
     fun playbackControler() {
         when (playerState.value) {
-            PlayerState.STATE_PLAYING -> {
+            is PlayerState.Play -> {
                 mainThreadHandler.removeCallbacks(timerRunnable)
                 pausePlayer()
             }
 
-            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+            PlayerState.Prepared, PlayerState.Pause -> {
                 startPlayer()
                 mainThreadHandler.post(timerRunnable)
             }
@@ -51,39 +63,44 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             else -> Unit
         }
     }
+    fun reset(){
+        interactorImpl.reset()
+    }
 
-    fun startPlayer() {               //  MP  start
+    private fun startPlayer() {               //  MP  start
         interactorImpl.startPlayer()
-        renderState(PlayerState.STATE_PLAYING)
+        renderState(PlayerState.Play(provideCurrentPosition()))
     }
 
-    fun pausePlayer() {               // MP  pauza
-        interactorImpl.pausePlayer()
-        renderState(PlayerState.STATE_PAUSED)
+    private fun pausePlayer() {
+       // MP  pauza
+            interactorImpl.pausePlayer()
+            renderState(PlayerState.Pause)
+
     }
 
 
-    fun release() = interactorImpl.release() // udalenie mp
-
-    fun provideCurrentPosition(): Int = interactorImpl.provideCurrentPosition() //poluchaem timer
+    fun provideCurrentPosition(): Long =
+        interactorImpl.provideCurrentPosition().toLong() //poluchaem timer
 
     fun isPlaying(): Boolean = interactorImpl.isPlaying()  // true or false
 
-    fun setupTimer() {
-        timerRunnable = Runnable {
-            if (interactorImpl.isPlaying()) {
-                mainThreadHandler.postDelayed(timerRunnable, 300)
-            }
-        }
-    }
+
     override fun onCleared() {
-        interactorImpl.release()
+        super.onCleared()
+        interactorImpl.reset()
+        playerState.value = PlayerState.Default
     }
+    fun release() = interactorImpl.release()
 
     companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+        fun getViewModelFactory(
+            track: Track,
+            previewUrl: String,
+            listner: PlayerListern,
+        ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                PlayerViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
+                PlayerViewModel(track ,previewUrl, listner)
             }
         }
     }

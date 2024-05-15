@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.practicum.playlistmaker.audioplayer.data.AudioPlayerImpl
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
-import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraktor
+import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
 import com.practicum.playlistmaker.audioplayer.domain.impl.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.search.data.TrackRepositoryImpl
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -44,7 +44,7 @@ object Creator {
         return AudioPlayerImpl()
     }
 
-    fun getInteractorPlayer(): AudioPlayerInteraktor {
+    fun getInteractorPlayer(): AudioPlayerInteraсtor {
         return AudioPlayerInteractorImpl(getMediaplayer())
     }
 

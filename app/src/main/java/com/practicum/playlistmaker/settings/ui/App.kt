@@ -5,6 +5,7 @@ import com.practicum.playlistmaker.utils.creator.Creator
 
 class App : Application() {
 
+
     override fun onCreate() {
         super.onCreate()
 

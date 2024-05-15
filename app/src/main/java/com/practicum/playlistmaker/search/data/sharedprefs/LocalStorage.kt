@@ -40,6 +40,7 @@ class LocalStorage(private val context: Context) {
     //очищаем историю
     fun clearHistory(){
         sharedPref.edit()
+            .clear()
             .remove(HISTORY_KEY)
             .apply()
     }
