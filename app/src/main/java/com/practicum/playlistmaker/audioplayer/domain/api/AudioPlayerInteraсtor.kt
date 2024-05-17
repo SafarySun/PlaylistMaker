@@ -4,9 +4,9 @@ interface AudioPlayerInteraсtor {
     fun reset()
     fun startPlayer()
     fun pausePlayer()
-    fun preparePlayer(previewUrl: String, listner: PlayerListern)
+    fun preparePlayer(previewUrl: String, listner: PlayerListener)
     fun release()
-    fun provideCurrentPosition(): Int
+    fun provideCurrentPosition():Long
 
     fun isPlaying(): Boolean
 }

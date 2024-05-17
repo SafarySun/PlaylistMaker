@@ -1,27 +1,27 @@
 package com.practicum.playlistmaker.search.presentation
 
-import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
 import com.practicum.playlistmaker.utils.creator.Creator
 
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(
+    private val trackInteractor :TrackInteractor
+) : ViewModel() {
 
 
     private val stateLiveData = MutableLiveData<TrackState>()
 
-    private val moviesInteractor = Creator.provideTrackInteractor(getApplication())
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -34,12 +34,12 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         if (getHistory().isNotEmpty()) renderState(TrackState.HistoryContent(getHistory())) else TrackState.HistoryEmpty
     }
 
-     fun getHistory(): ArrayList<Track> =  moviesInteractor.getHistory()      // polu4aem treki iz sharedpref
+     fun getHistory(): ArrayList<Track> =  trackInteractor.getHistory()      // polu4aem treki iz sharedpref
 
-    fun addTrackToHistory(track: Track) = moviesInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
+    fun addTrackToHistory(track: Track) = trackInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
 
     fun clearHistory() {
-        moviesInteractor.clearHistory()
+        trackInteractor.clearHistory()
         renderState(TrackState.HistoryEmpty)
     }
 
@@ -78,7 +78,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         if (newSearchText.isNotEmpty()) {
             renderState(TrackState.Loading)
 
-            moviesInteractor.searchTracks(newSearchText, object : TrackInteractor.TrackConsumer {
+            trackInteractor.searchTracks(newSearchText, object : TrackInteractor.TrackConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     val track = mutableListOf<Track>()
                     if (foundTracks != null) {
@@ -88,25 +88,21 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                     when {
                         errorMessage != null -> {
                             renderState(
-                                TrackState.Error(
-                                    errorMessage = getApplication<Application>().getString(R.string.error_internet),
-                                )
+                                TrackState.Error
                             )
                             showToast.postValue(errorMessage)
                         }
 
                         track.isEmpty() -> {
                             renderState(
-                                TrackState.Empty(
-                                    message = getApplication<Application>().getString(R.string.error_empty_search),
-                                )
+                                TrackState.Empty
                             )
                         }
 
                         else -> {
                             renderState(
                                 TrackState.Content(
-                                    track = track,
+                                    track = track
                                 )
                             )
                         }
@@ -119,9 +115,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+        fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
+                  val trackInteractor = Creator.provideTrackInteractor(context)
+                SearchViewModel(trackInteractor)
             }
         }
     }

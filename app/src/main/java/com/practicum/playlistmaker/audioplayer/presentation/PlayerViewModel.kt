@@ -8,11 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListern
+import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.creator.Creator
 
-class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerListern) : ViewModel() {
+class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerListener) : ViewModel() {
 
     private val timerRunnable: Runnable = object : Runnable {
         override fun run() {
@@ -42,7 +42,7 @@ class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerLis
     }
 
     //podgotovka mp
-    private fun preparePlayer(previewUrl: String, listner: PlayerListern) {
+    private fun preparePlayer(previewUrl: String, listner: PlayerListener) {
         interactorImpl.preparePlayer(previewUrl, listner)
         renderState(PlayerState.Prepared)
     }
@@ -72,8 +72,7 @@ class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerLis
         renderState(PlayerState.Play(provideCurrentPosition()))
     }
 
-    private fun pausePlayer() {
-       // MP  pauza
+    private fun pausePlayer() {               // MP  pauza
             interactorImpl.pausePlayer()
             renderState(PlayerState.Pause)
 
@@ -81,7 +80,7 @@ class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerLis
 
 
     fun provideCurrentPosition(): Long =
-        interactorImpl.provideCurrentPosition().toLong() //poluchaem timer
+        interactorImpl.provideCurrentPosition() //poluchaem timer
 
     fun isPlaying(): Boolean = interactorImpl.isPlaying()  // true or false
 
@@ -97,7 +96,7 @@ class PlayerViewModel( val track: Track, previewUrl: String, listener: PlayerLis
         fun getViewModelFactory(
             track: Track,
             previewUrl: String,
-            listner: PlayerListern,
+            listner: PlayerListener,
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PlayerViewModel(track ,previewUrl, listner)

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListern
+import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
 import com.practicum.playlistmaker.audioplayer.presentation.PlayerState
 import com.practicum.playlistmaker.audioplayer.presentation.PlayerViewModel
 import com.practicum.playlistmaker.audioplayer.presentation.TrackScreenState
@@ -35,7 +35,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val previewUrl = track.previewUrl
 
-        val listener = object : PlayerListern {
+        val listener = object : PlayerListener {
             override fun onPrepared() {
                 binding.btnPlayPause.isEnabled = true
 
@@ -60,7 +60,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     setupImage(track)
 
                 }
-                else -> {}
+                else -> Unit
             }
         }
         viewModel.getPlayerState().observe(this) {
@@ -92,16 +92,19 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun changeContentVisibility(hasContent: Boolean) {
         with(binding) {
-            itemCountry.isVisible = hasContent
-            itemGenre.isVisible = hasContent
-            itemYear.isVisible = hasContent
-            titleArtist.isVisible = hasContent
-            itemDuration.isVisible = hasContent
-            titleAlbum.isVisible = hasContent
-            time.isVisible = hasContent
-            btnPlayPause.isVisible = hasContent
-            itemAlbum.isVisible = hasContent
-            progressBar.isVisible = !hasContent
+            if(hasContent){
+                itemCountry.isVisible
+                itemGenre.isVisible
+                itemYear.isVisible
+                titleArtist.isVisible
+                itemDuration.isVisible
+                titleAlbum.isVisible
+                time.isVisible
+                btnPlayPause.isVisible
+                itemAlbum.isVisible
+
+            }
+            else progressBar.isVisible
         }
     }
 

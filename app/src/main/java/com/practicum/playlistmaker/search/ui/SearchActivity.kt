@@ -53,7 +53,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val viewModel by lazy {
         ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory()
+            this, SearchViewModel.getViewModelFactory(applicationContext)
         )[SearchViewModel::class.java]
     }
 
@@ -110,7 +110,7 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
                 binding.clearIcon.visibility = clearButtonVisibility(s)
                 if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty()) {
-                    showEmpty()
+                    showEmptyScreen()
                 }
 
             }
@@ -127,8 +127,7 @@ class SearchActivity : AppCompatActivity() {
             viewModel.clearHistory()
             adapterHistory.tracks = viewModel.getHistory()
             adapterHistory.notifyDataSetChanged()
-
-            showEmpty()
+            showEmptyScreen()
 
         }
         binding.buttonUpdate.setOnClickListener {
@@ -166,11 +165,11 @@ class SearchActivity : AppCompatActivity() {
     private fun render(state: TrackState) {
         when (state) {
             is TrackState.Content -> showContent(state.track)
-            is TrackState.Empty -> showEmpty(state.message)
-            is TrackState.Error -> showError(state.errorMessage)
+            is TrackState.Empty -> showEmptySearch()
+            is TrackState.Error -> showError()
             is TrackState.Loading -> showLoading()
             is TrackState.HistoryContent -> showHistory(state.track)
-            is TrackState.HistoryEmpty -> showEmpty()
+            is TrackState.HistoryEmpty -> showEmptyScreen()
         }
     }
 
@@ -184,7 +183,7 @@ class SearchActivity : AppCompatActivity() {
         binding.rvHistory.visibility = View.VISIBLE
     }
 
-    private fun showEmpty() {
+    private fun showEmptyScreen() {
         adapterHistory.notifyDataSetChanged()
         binding.recycleViewSearch.visibility = View.GONE
         binding.historyHead.visibility = View.GONE
@@ -203,25 +202,25 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun showError(errorMessage: String) {
+    private fun showError() {
         binding.recycleViewSearch.visibility = View.GONE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderHead.visibility = View.VISIBLE
         binding.imageError.setImageResource(R.drawable.error_internet)
         binding.progressBar.visibility = View.GONE
-        binding.placeholderMessage.text = errorMessage
+        binding.placeholderMessage.text = getString(R.string.error_internet)
         binding.buttonUpdate.visibility = View.VISIBLE
 
 
     }
 
-    private fun showEmpty(emptyMessage: String) {
+    private fun showEmptySearch() {
         binding.recycleViewSearch.visibility = View.GONE
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderHead.visibility = View.VISIBLE
         binding.imageError.setImageResource(R.drawable.error_smile_empty)
         binding.progressBar.visibility = View.GONE
-        binding.placeholderMessage.text = emptyMessage
+        binding.placeholderMessage.text = getString(R.string.error_empty_search)
         binding.buttonUpdate.visibility = View.VISIBLE
 
     }

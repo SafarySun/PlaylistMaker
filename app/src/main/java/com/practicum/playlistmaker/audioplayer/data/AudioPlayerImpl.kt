@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.audioplayer.data
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListern
+import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
 
 class AudioPlayerImpl : AudioPlayer {
     private val mediaPlayer = MediaPlayer()
@@ -18,7 +18,7 @@ class AudioPlayerImpl : AudioPlayer {
 
     }
 
-    override fun preparePlayer(previewUrl: String, listner: PlayerListern) {
+    override fun preparePlayer(previewUrl: String, listner: PlayerListener) {
         mediaPlayer.apply {
             reset()
             setDataSource(previewUrl)
@@ -42,14 +42,14 @@ class AudioPlayerImpl : AudioPlayer {
         mediaPlayer.release()
     }
 
-    override fun provideCurrentPosition(): Int {
+    override fun provideCurrentPosition(): Long {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.currentPosition
         } else {
             0
         }
 
-        return mediaPlayer.currentPosition
+        return mediaPlayer.currentPosition.toLong()
     }
 
     override fun isPlaying(): Boolean = mediaPlayer.isPlaying
