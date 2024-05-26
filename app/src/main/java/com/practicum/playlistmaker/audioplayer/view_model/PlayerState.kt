@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.audioplayer.presentation
+package com.practicum.playlistmaker.audioplayer.view_model
 
 sealed class PlayerState {
     object Default : PlayerState()

@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.audioplayer.domain.impl
 
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
 
 class AudioPlayerInteractorImpl(private val player:AudioPlayer):AudioPlayerInteraсtor {
 
@@ -15,8 +14,8 @@ class AudioPlayerInteractorImpl(private val player:AudioPlayer):AudioPlayerInter
         player.pausePlayer()
     }
 
-    override fun preparePlayer(previewUrl: String,listner: PlayerListener) {
-        player.preparePlayer(previewUrl,listner)
+    override fun preparePlayer(previewUrl: String,listener: AudioPlayerInteraсtor.PlayerListener) {
+        player.preparePlayer(previewUrl,listener)
 
     }
     override fun reset(){

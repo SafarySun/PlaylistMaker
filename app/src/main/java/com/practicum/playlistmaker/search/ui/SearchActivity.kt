@@ -13,13 +13,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.ui.model.TrackState
+import com.practicum.playlistmaker.search.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
@@ -49,16 +49,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-
-
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory(applicationContext)
-        )[SearchViewModel::class.java]
-    }
-
     private var textWatcher: TextWatcher? = null
 
+    private val viewModel by viewModel<SearchViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -149,7 +142,7 @@ class SearchActivity : AppCompatActivity() {
         textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
     }
 
-    private fun showToast(additionalMessage: String) {
+    private fun showToast(additionalMessage: String?) {
         Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
     }
 

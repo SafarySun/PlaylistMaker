@@ -1,32 +1,22 @@
-package com.practicum.playlistmaker.search.presentation
+package com.practicum.playlistmaker.search.view_model
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
-import com.practicum.playlistmaker.utils.creator.Creator
 
 class SearchViewModel(
-    private val trackInteractor :TrackInteractor
+    private val trackInteractor: TrackInteractor
 ) : ViewModel() {
 
-
     private val stateLiveData = MutableLiveData<TrackState>()
-
-
     private val handler = Handler(Looper.getMainLooper())
-
-    private val showToast = SingleLiveEvent<String>()
-
+    private val showToast = SingleLiveEvent<String?>()
     private var latestSearchText: String = ""
 
     init {
@@ -34,9 +24,11 @@ class SearchViewModel(
         if (getHistory().isNotEmpty()) renderState(TrackState.HistoryContent(getHistory())) else TrackState.HistoryEmpty
     }
 
-     fun getHistory(): ArrayList<Track> =  trackInteractor.getHistory()      // polu4aem treki iz sharedpref
+    fun getHistory(): ArrayList<Track> =
+        trackInteractor.getHistory()      // polu4aem treki iz sharedpref
 
-    fun addTrackToHistory(track: Track) = trackInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
+    fun addTrackToHistory(track: Track) =
+        trackInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
 
     fun clearHistory() {
         trackInteractor.clearHistory()
@@ -48,7 +40,7 @@ class SearchViewModel(
         stateLiveData.postValue(state)
     }
 
-    fun observeShowToast(): LiveData<String> = showToast      //poluchaem LD for toast
+    fun observeShowToast(): LiveData<String?> = showToast      //poluchaem LD for toast
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
@@ -115,11 +107,7 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                  val trackInteractor = Creator.provideTrackInteractor(context)
-                SearchViewModel(trackInteractor)
-            }
-        }
+
     }
 }
+

@@ -6,7 +6,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.TrackFrameBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.utils.creator.formatDuration
+import com.practicum.playlistmaker.utils.formatDuration
 
 
 class TrackViewHolder(private val binding: TrackFrameBinding) :

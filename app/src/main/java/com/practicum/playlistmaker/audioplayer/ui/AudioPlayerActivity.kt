@@ -3,25 +3,27 @@ package com.practicum.playlistmaker.audioplayer.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
-import com.practicum.playlistmaker.audioplayer.presentation.PlayerState
-import com.practicum.playlistmaker.audioplayer.presentation.PlayerViewModel
-import com.practicum.playlistmaker.audioplayer.presentation.TrackScreenState
+import com.practicum.playlistmaker.audioplayer.view_model.PlayerState
+import com.practicum.playlistmaker.audioplayer.view_model.PlayerViewModel
+import com.practicum.playlistmaker.audioplayer.view_model.TrackScreenState
 import com.practicum.playlistmaker.databinding.AudioPlayerBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchActivity
-import com.practicum.playlistmaker.utils.creator.formatDuration
-import com.practicum.playlistmaker.utils.creator.formatYear
+import com.practicum.playlistmaker.utils.formatDuration
+import com.practicum.playlistmaker.utils.formatYear
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: AudioPlayerBinding
     private lateinit var track: Track
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(track)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,22 +35,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         track = intent.getParcelableExtra(SearchActivity.TRANSITION)!!
 
-        val previewUrl = track.previewUrl
-
-        val listener = object : PlayerListener {
-            override fun onPrepared() {
-                binding.btnPlayPause.isEnabled = true
-
-            }
-
-            override fun onCompletion() {
-                binding.time.text = getString(R.string.time_zero)
-                binding.btnPlayPause.setImageResource(R.drawable.play)
-            }
-        }
-        viewModel = ViewModelProvider(
-            this, PlayerViewModel.getViewModelFactory(track,previewUrl, listener)
-        )[PlayerViewModel::class.java]
 
         viewModel.getScreenState().observe(this) {
             when (it) {
@@ -60,6 +46,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     setupImage(track)
 
                 }
+
                 else -> Unit
             }
         }
@@ -70,7 +57,9 @@ class AudioPlayerActivity : AppCompatActivity() {
                     binding.btnPlayPause.isEnabled = false
                     binding.btnPlayPause.setImageResource(R.drawable.play)
                 }
+
                 PlayerState.Prepared -> {
+                    binding.btnPlayPause.isEnabled = true
                     binding.btnPlayPause.setImageResource(R.drawable.play)
                     binding.time.text = getString(R.string.time_zero)
                 }
@@ -80,6 +69,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     binding.btnPlayPause.setImageResource(if (viewModel.isPlaying()) R.drawable.pause else R.drawable.play)
                     binding.time.text = formatDuration(viewModel.provideCurrentPosition())
                 }
+
                 PlayerState.Pause -> {
                     binding.btnPlayPause.isEnabled = true
                     binding.btnPlayPause.setImageResource(R.drawable.play)
@@ -92,7 +82,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun changeContentVisibility(hasContent: Boolean) {
         with(binding) {
-            if(hasContent){
+            if (hasContent) {
                 itemCountry.isVisible
                 itemGenre.isVisible
                 itemYear.isVisible
@@ -103,8 +93,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 btnPlayPause.isVisible
                 itemAlbum.isVisible
 
-            }
-            else progressBar.isVisible
+            } else progressBar.isVisible
         }
     }
 

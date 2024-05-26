@@ -2,10 +2,10 @@ package com.practicum.playlistmaker.audioplayer.data
 
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
-import com.practicum.playlistmaker.audioplayer.domain.api.PlayerListener
+import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
 
-class AudioPlayerImpl : AudioPlayer {
-    private val mediaPlayer = MediaPlayer()
+class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
+
 
 
     override fun startPlayer() {
@@ -18,17 +18,17 @@ class AudioPlayerImpl : AudioPlayer {
 
     }
 
-    override fun preparePlayer(previewUrl: String, listner: PlayerListener) {
+    override fun preparePlayer(previewUrl: String, listener: AudioPlayerInteraсtor.PlayerListener) {
         mediaPlayer.apply {
             reset()
             setDataSource(previewUrl)
             prepareAsync()
             setOnPreparedListener {
-                listner.onPrepared()
+                listener.onPrepared()
             }
             setOnCompletionListener {
                 seekTo(0)
-                listner.onCompletion()
+                listener.onCompletion()
             }
 
         }

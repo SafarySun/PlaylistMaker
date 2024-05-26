@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.audioplayer.presentation
+package com.practicum.playlistmaker.audioplayer.view_model
 
 import com.practicum.playlistmaker.search.domain.models.Track
 
