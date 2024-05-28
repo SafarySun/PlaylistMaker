@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -19,7 +20,7 @@ val repositoryModule = module {
         )
     }
     single<SettingsRepository> {
-        SettingsRepositoryImpl(androidContext())
+        SettingsRepositoryImpl(sharedPreferences = get(named("settings")))
     }
     single<AudioPlayer> {
         AudioPlayerImpl(get())

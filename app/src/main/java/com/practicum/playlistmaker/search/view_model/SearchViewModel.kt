@@ -18,20 +18,39 @@ class SearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
     private val showToast = SingleLiveEvent<String?>()
     private var latestSearchText: String = ""
-
+    private var cachedHistory: List<Track> = emptyList()
     init {
-        getHistory()
-        if (getHistory().isNotEmpty()) renderState(TrackState.HistoryContent(getHistory())) else TrackState.HistoryEmpty
+        cachedHistory = trackInteractor.getHistory()
+        if (cachedHistory.isNotEmpty()) {
+            renderState(TrackState.HistoryContent(cachedHistory))
+        } else {
+            renderState(TrackState.HistoryEmpty)
+        }
+    }
+    fun onClearTextClick(show: () -> Unit,empty: () -> Unit){
+        val history = getHistory()
+        if(history.isNotEmpty()) {
+            renderState(TrackState.HistoryContent(history))
+            show.invoke()
+        }else{
+        renderState(TrackState.Empty)
+        empty.invoke()
+    }
     }
 
-    fun getHistory(): ArrayList<Track> =
-        trackInteractor.getHistory()      // polu4aem treki iz sharedpref
+    fun getHistory(): List<Track> {
+        if (cachedHistory.isEmpty()) {
+            cachedHistory = trackInteractor.getHistory()
+        }
+        return cachedHistory
+    }                                            // polu4aem treki iz sharedpref
 
     fun addTrackToHistory(track: Track) =
         trackInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
 
     fun clearHistory() {
         trackInteractor.clearHistory()
+        cachedHistory = emptyList()
         renderState(TrackState.HistoryEmpty)
     }
 

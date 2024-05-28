@@ -1,12 +1,11 @@
 package com.practicum.playlistmaker.settings.data.impl
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 
 
-class SettingsRepositoryImpl(val context: Context) : SettingsRepository {
+class SettingsRepositoryImpl(private val sharedPreferences: SharedPreferences) : SettingsRepository {
 
-    private val sharedPreferences = context.getSharedPreferences(GET, Context.MODE_PRIVATE)
     //получаем ШП с состоянием темы
     override fun getThemeSettings() = sharedPreferences.getBoolean(PREFERENCES, true)
 
@@ -19,10 +18,7 @@ class SettingsRepositoryImpl(val context: Context) : SettingsRepository {
 
     }
 
-    //меняем тему
-
     companion object {
         const val PREFERENCES = "preferencies"
-        const val GET = "GET"
     }
 }

@@ -49,7 +49,6 @@ class LocalStorageImpl(
     companion object{
         const val HISTORY_KEY = "SEARCH_HISTORY_KEY"
         private const val MAX_INDEX = 10
-        const val HISTORY = "HISTORY"
     }
 
 }

@@ -13,8 +13,13 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
     override fun searchTracks(expression: String, consumer: TrackInteractor.TrackConsumer) {
         executor.execute {
             when(val resource = repository.searchTracks(expression)) {
-                is Resource.Success -> { consumer.consume(resource.data, null) }
-                is Resource.Error -> { consumer.consume(null, resource.message) }
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
             }
 
         }

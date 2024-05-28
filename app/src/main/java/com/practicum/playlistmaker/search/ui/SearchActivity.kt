@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -24,27 +23,25 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private val adapterHistory = TrackAdapter(
-        object : ClickListernForTrack {
-            override fun onTrackClickListern(track: Track) {
-                if (clickDebounce()) {
-                    startTrack(track)
-                }
-
+    private val adapterHistory = TrackAdapter(object : ClickListernForTrack {
+        override fun onTrackClickListern(track: Track) {
+            if (clickDebounce()) {
+                startTrack(track)
             }
-        })
-    private val adapter = TrackAdapter(
-        object : ClickListernForTrack {
-            override fun onTrackClickListern(track: Track) {
-                if (clickDebounce()) {
-                    viewModel.addTrackToHistory(track)
-                    startTrack(track)
-                    adapterHistory.notifyItemRemoved(0)
-                    adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
-                }
 
+        }
+    })
+    private val adapter = TrackAdapter(object : ClickListernForTrack {
+        override fun onTrackClickListern(track: Track) {
+            if (clickDebounce()) {
+                viewModel.addTrackToHistory(track)
+                startTrack(track)
+                adapterHistory.notifyItemRemoved(0)
+                adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
             }
-        })
+
+        }
+    })
 
     private lateinit var binding: ActivitySearchBinding
     private var isClickAllowed = true
@@ -89,7 +86,12 @@ class SearchActivity : AppCompatActivity() {
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
             adapterHistory.notifyDataSetChanged()
-            binding.historyHead.isVisible = adapterHistory.tracks.isNotEmpty()
+
+            viewModel.onClearTextClick(show = {
+                showHistory(adapterHistory.tracks)
+            }, empty = {
+                showEmptyScreen()
+            })
         }
 
         //Наблюдатель Текста
@@ -101,7 +103,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
+
                 binding.clearIcon.visibility = clearButtonVisibility(s)
+
                 if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty()) {
                     showEmptyScreen()
                 }
@@ -118,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
 // ochistit history
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
-            adapterHistory.tracks = viewModel.getHistory()
+            adapterHistory.tracks.clear()
             adapterHistory.notifyDataSetChanged()
             showEmptyScreen()
 
@@ -182,7 +186,6 @@ class SearchActivity : AppCompatActivity() {
         binding.historyHead.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.rvHistory.visibility = View.GONE
-        Log.d("SHOW", "EMTY")
     }
 
     private fun showLoading() {

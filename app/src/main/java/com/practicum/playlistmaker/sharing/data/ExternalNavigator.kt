@@ -6,4 +6,9 @@ interface ExternalNavigator {
     fun shareLink(adressApp:String)
     fun openLink(agreementText:String)
     fun openEmail(model: EmailData)
+    fun getShareAppLink():String
+
+    fun getSupportEmailData() : EmailData
+
+    fun getTermsLink():String
 }

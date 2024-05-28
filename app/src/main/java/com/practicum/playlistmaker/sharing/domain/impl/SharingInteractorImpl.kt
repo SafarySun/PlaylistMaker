@@ -1,28 +1,25 @@
 package com.practicum.playlistmaker.sharing.domain.impl
 
-import android.content.Context
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import com.practicum.playlistmaker.sharing.domain.api.SharingInteractor
-import com.practicum.playlistmaker.sharing.domain.model.EmailData
 
 class SharingInteractorImpl(
     private val externalNavigator: ExternalNavigator,
-    private val context: Context
+
 ) : SharingInteractor {
     override fun shareApp() {
-        externalNavigator.shareLink(getShareAppLink())
+        externalNavigator.shareLink(externalNavigator.getShareAppLink())
     }
 
     override fun openTerms() {
-        externalNavigator.openLink(getTermsLink())
+        externalNavigator.openLink(externalNavigator.getTermsLink())
     }
 
     override fun openSupport() {
-        externalNavigator.openEmail(getSupportEmailData())
+        externalNavigator.openEmail(externalNavigator.getSupportEmailData())
     }
 
-    private fun getShareAppLink() = context.getString(R.string.adress_android)
+    /*private fun getShareAppLink() = context.getString(R.string.adress_android)
 
     private fun getSupportEmailData() = EmailData(
         email = context.getString(R.string.adress_android),
@@ -31,6 +28,8 @@ class SharingInteractorImpl(
     )
 
     private fun getTermsLink() = context.getString(R.string.adress_website)
+
+     */
 
 
 }
