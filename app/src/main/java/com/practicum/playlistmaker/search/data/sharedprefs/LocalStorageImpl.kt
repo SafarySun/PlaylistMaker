@@ -10,7 +10,7 @@ class LocalStorageImpl(
 
 
 // сохраняем треки в ШП
- private val savedHistory = loadTracks()
+
    private fun saveTrackToJson(track:ArrayList<Track>){
         val jsonTracks = gson.toJson(track)
         sharedPreferences.edit()
@@ -28,6 +28,7 @@ class LocalStorageImpl(
 
     // проверяем обьекты в ШП и добавляем их в историю
     override fun addTrackToHistory(track: Track){
+         val savedHistory = loadTracks()
         if(savedHistory.size >= MAX_INDEX) {
             savedHistory.removeAt(savedHistory.size -1)
         }
@@ -39,7 +40,6 @@ class LocalStorageImpl(
     //очищаем историю
     override fun clearHistory(){
         sharedPreferences.edit()
-            .clear()
             .remove(HISTORY_KEY)
             .apply()
     }

@@ -18,11 +18,11 @@ class SearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
     private val showToast = SingleLiveEvent<String?>()
     private var latestSearchText: String = ""
-    private var cachedHistory: List<Track> = emptyList()
+
     init {
-        cachedHistory = trackInteractor.getHistory()
-        if (cachedHistory.isNotEmpty()) {
-            renderState(TrackState.HistoryContent(cachedHistory))
+
+        if (getHistory().isNotEmpty()) {
+            renderState(TrackState.HistoryContent(getHistory()))
         } else {
             renderState(TrackState.HistoryEmpty)
         }
@@ -33,24 +33,19 @@ class SearchViewModel(
             renderState(TrackState.HistoryContent(history))
             show.invoke()
         }else{
-        renderState(TrackState.Empty)
+        renderState(TrackState.HistoryEmpty)
         empty.invoke()
     }
     }
 
-    fun getHistory(): List<Track> {
-        if (cachedHistory.isEmpty()) {
-            cachedHistory = trackInteractor.getHistory()
-        }
-        return cachedHistory
-    }                                            // polu4aem treki iz sharedpref
+    fun getHistory(): List<Track> = trackInteractor.getHistory()  // polu4aem treki iz sharedpref
+
 
     fun addTrackToHistory(track: Track) =
         trackInteractor.addTrackToHistory(track)   // dobavlyaem trek v sharedpref
 
     fun clearHistory() {
         trackInteractor.clearHistory()
-        cachedHistory = emptyList()
         renderState(TrackState.HistoryEmpty)
     }
 
@@ -82,7 +77,7 @@ class SearchViewModel(
     }
 
     fun updateSearch() {
-        searchDebounce(latestSearchText)
+        searchRequest(latestSearchText)
     }
 
     private fun searchRequest(newSearchText: String) {
@@ -103,20 +98,20 @@ class SearchViewModel(
                             )
                             showToast.postValue(errorMessage)
                         }
-
                         track.isEmpty() -> {
                             renderState(
                                 TrackState.Empty
                             )
                         }
 
-                        else -> {
+                        else-> {
                             renderState(
                                 TrackState.Content(
                                     track = track
                                 )
                             )
                         }
+
                     }
                 }
             })

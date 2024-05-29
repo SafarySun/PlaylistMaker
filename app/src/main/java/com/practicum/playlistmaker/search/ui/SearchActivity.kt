@@ -7,11 +7,11 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
@@ -81,14 +81,14 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
 
-            binding.placeholderHead.visibility = View.GONE
-            binding.buttonUpdate.visibility = View.GONE
+           // binding.placeholderHead.visibility = View.GONE
+           // binding.buttonUpdate.visibility = View.GONE
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
             adapterHistory.notifyDataSetChanged()
 
             viewModel.onClearTextClick(show = {
-                showHistory(adapterHistory.tracks)
+                showHistory(viewModel.getHistory())
             }, empty = {
                 showEmptyScreen()
             })
@@ -105,13 +105,10 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
 
                 binding.clearIcon.visibility = clearButtonVisibility(s)
-
-                if (binding.inputEditText.hasFocus() && binding.inputEditText.text.isEmpty()) {
-                    showEmptyScreen()
-                }
+                if(s?.toString().isNullOrEmpty() && adapterHistory.tracks.isNotEmpty())showHistory(viewModel.getHistory())
+                Log.d("tag","onText")
 
             }
-
 
             override fun afterTextChanged(s: Editable?) {
                 // empty
@@ -123,20 +120,29 @@ class SearchActivity : AppCompatActivity() {
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
             adapterHistory.tracks.clear()
+            viewModel.getHistory()
             adapterHistory.notifyDataSetChanged()
-            showEmptyScreen()
+            //showEmptyScreen()
 
         }
         binding.buttonUpdate.setOnClickListener {
             viewModel.updateSearch()
         }
 
-        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()) {
-                binding.historyHead.isVisible = true
+        /*binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
+           if (hasFocus && binding.inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()) {
+                showHistory(viewModel.getHistory())
+                adapterHistory.notifyDataSetChanged()
+            }else if(!hasFocus && binding.inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()){
+                showHistory(viewModel.getHistory())
+                adapterHistory.notifyDataSetChanged()
+            }else{
+                showEmptyScreen()
             }
-
+Log.d("tag","onFocus")
         }
+
+         */
 
     }
 
