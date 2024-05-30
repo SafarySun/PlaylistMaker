@@ -81,8 +81,8 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
 
-           // binding.placeholderHead.visibility = View.GONE
-           // binding.buttonUpdate.visibility = View.GONE
+            binding.placeholderHead.visibility = View.GONE
+            binding.buttonUpdate.visibility = View.GONE
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
             adapterHistory.notifyDataSetChanged()
