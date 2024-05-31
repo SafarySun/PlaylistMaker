@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -87,11 +86,9 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
             adapterHistory.notifyDataSetChanged()
 
-            viewModel.onClearTextClick(show = {
-                showHistory(viewModel.getHistory())
-            }, empty = {
-                showEmptyScreen()
-            })
+            viewModel.onClearTextClick(
+                show = { showHistory(viewModel.getHistory()) },
+                empty = { showEmptyScreen() })
         }
 
         //Наблюдатель Текста
@@ -105,8 +102,11 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.searchDebounce(changedText = s?.toString() ?: "")
 
                 binding.clearIcon.visibility = clearButtonVisibility(s)
-                if(s?.toString().isNullOrEmpty() && adapterHistory.tracks.isNotEmpty())showHistory(viewModel.getHistory())
-                Log.d("tag","onText")
+                if (s?.toString().isNullOrEmpty()) {
+                    viewModel.onClearTextClick(
+                        show = { showHistory(viewModel.getHistory()) },
+                        empty = { showEmptyScreen() })
+                }
 
             }
 
