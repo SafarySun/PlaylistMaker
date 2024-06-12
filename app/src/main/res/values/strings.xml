@@ -29,4 +29,10 @@
     <string name="error_internet" translatable="false">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="error_empty_search" translatable="false">Ничего не нашлось</string>
 
+    <string name="error_empty_media" translatable="false">Ваша медиатека пуста</string>
+    <string name="playsists" translatable="false">Плейлисты</string>
+    <string name="favourite_tracks" translatable="false">Избранные треки</string>
+    <string name="we_have_not_playlists" translatable="false">Вы не создали\nни одного плейлиста</string>
+    <string name="new_playlist" translatable="false">Новый плейлист</string>
+
 </resources>

@@ -128,22 +128,6 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonUpdate.setOnClickListener {
             viewModel.updateSearch()
         }
-
-        /*binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-           if (hasFocus && binding.inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()) {
-                showHistory(viewModel.getHistory())
-                adapterHistory.notifyDataSetChanged()
-            }else if(!hasFocus && binding.inputEditText.text.isEmpty() && adapterHistory.tracks.isNotEmpty()){
-                showHistory(viewModel.getHistory())
-                adapterHistory.notifyDataSetChanged()
-            }else{
-                showEmptyScreen()
-            }
-Log.d("tag","onFocus")
-        }
-
-         */
-
     }
 
 
