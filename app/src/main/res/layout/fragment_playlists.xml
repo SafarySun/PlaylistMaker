@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/error_note_left"
-            app:tint="@color/day_night" />
+            />
 
         <ImageView
             android:id="@+id/image_error"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:src="@drawable/error_note_right"
-            app:tint="@color/day_night" />
+             />
     </FrameLayout>
 
     <TextView

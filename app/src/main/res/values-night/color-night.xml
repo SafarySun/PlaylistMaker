@@ -4,4 +4,5 @@
     <color name="hint">@color/white</color>
     <color name="text_hint">@color/black</color>
     <color name="update_text">@color/black</color>
+    <color name="color_bottom">@color/YP_blue</color>
 </resources>

@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.audioplayer.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -11,7 +12,6 @@ import com.practicum.playlistmaker.audioplayer.view_model.PlayerViewModel
 import com.practicum.playlistmaker.audioplayer.view_model.TrackScreenState
 import com.practicum.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.SearchFragment
 import com.practicum.playlistmaker.utils.formatDuration
 import com.practicum.playlistmaker.utils.formatYear
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -37,10 +37,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.btnPlayPause.isEnabled = false
 
-        track = intent.getParcelableExtra(SearchFragment.TRANSITION)!!
+            // track = intent.getParcelableExtra(SearchFragment.TRANSITION)!!
 
-      //  val args: AudioPlayerActivityArgs by navArgs()
-       // track = args.trackId
+       val args: AudioPlayerActivityArgs by navArgs()
+        track = args.trackId
 
         viewModel.getScreenState().observe(this) {
             when (it) {

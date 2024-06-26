@@ -1,21 +1,20 @@
 package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.gson.Gson
+import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.audioplayer.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
@@ -38,6 +37,7 @@ class SearchFragment : Fragment() {
             if (clickDebounce()) {
                 viewModel.addTrackToHistory(track)
                 startTrack(track)
+                Log.d("error","this point")
                 adapterHistory.notifyItemRemoved(0)
                 adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
             }
@@ -237,13 +237,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun startTrack(track: Track) {
-        if (clickDebounce()) {
-            val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
-            val gson = Gson()
-            val json = gson.toJson(track)
-            startActivity(playerIntent.putExtra(TRANSITION, json))
-
-        }
+        val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerActivity(track)
+        findNavController().navigate(action)
     }
 
     companion object {

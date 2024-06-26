@@ -4,18 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <LinearLayout style="@style/ToolbarBox">
-
-        <ImageView
-            android:id="@+id/backButton"
-            style="@style/ToolbarBack"
-            android:src="@drawable/back" />
-
+    
         <TextView
             style="@style/ToolbarTitle"
             android:text="@string/button_setting" />
-    </LinearLayout>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/btn_switch_theme"
