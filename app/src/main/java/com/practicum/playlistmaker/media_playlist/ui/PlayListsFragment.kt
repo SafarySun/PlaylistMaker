@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.practicum.playlistmaker.databinding.PlaylistsFragmentBinding
+import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.media_playlist.view_model.PlayListContentState
 import com.practicum.playlistmaker.media_playlist.view_model.PlayListFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,11 +18,11 @@ class PlayListsFragment: Fragment() {
         fun newInstance() = PlayListsFragment()
             }
 
-    private lateinit var binding: PlaylistsFragmentBinding
+    private lateinit var binding: FragmentPlaylistsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = PlaylistsFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
 

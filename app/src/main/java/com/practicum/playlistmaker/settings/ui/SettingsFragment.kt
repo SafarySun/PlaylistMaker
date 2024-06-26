@@ -2,29 +2,30 @@ package com.practicum.playlistmaker.settings.ui
 
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
     private val viewModel by viewModel<SettingsViewModel>()
-    private lateinit var binding: ActivitySettingsBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private lateinit var binding: FragmentSettingsBinding
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.getSettingsLiveData().observe(this) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getSettingsLiveData().observe(viewLifecycleOwner) {
             binding.btnSwitchTheme.isChecked = it
         }
-        //Кнопка назад
-        binding.backButton.setOnClickListener {
-            finish()
-        }
 
-        //Переключение режима Ночной-Дневной
 
         binding.btnSwitchTheme.setOnCheckedChangeListener { _, isChecked ->
             viewModel.switchTheme(isChecked)

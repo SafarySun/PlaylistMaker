@@ -7,20 +7,23 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.audioplayer.ui.AudioPlayerActivity
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
 import com.practicum.playlistmaker.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
     private val adapterHistory = TrackAdapter(object : ClickListernForTrack {
         override fun onTrackClickListern(track: Track) {
@@ -42,31 +45,33 @@ class SearchActivity : AppCompatActivity() {
         }
     })
 
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var binding: FragmentSearchBinding
+
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<SearchViewModel>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        viewModel.observeState().observe(this) {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-        viewModel.observeShowToast().observe(this) {
+        viewModel.observeShowToast().observe(viewLifecycleOwner) {
             showToast(it)
         }
 
         binding.recycleViewSearch.adapter = adapter
         binding.rvHistory.adapter = adapterHistory
 
-        // Кнопка назад
-        binding.backButton.setOnClickListener {
-            finish()
-        }
 
         // Фокусировка
         binding.inputEditText.setOnClickListener {
@@ -77,7 +82,7 @@ class SearchActivity : AppCompatActivity() {
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
 
             binding.placeholderHead.visibility = View.GONE
@@ -131,13 +136,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
     }
 
     private fun showToast(additionalMessage: String?) {
-        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), additionalMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun clickDebounce(): Boolean {
@@ -232,10 +237,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun startTrack(track: Track) {
-        val intent = Intent(this, AudioPlayerActivity::class.java)
-        intent.putExtra(TRANSITION, track)
-        startActivity(intent)
+        if (clickDebounce()) {
+            val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
+            val gson = Gson()
+            val json = gson.toJson(track)
+            startActivity(playerIntent.putExtra(TRANSITION, json))
 
+        }
     }
 
     companion object {

@@ -9,9 +9,9 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.audioplayer.view_model.PlayerState
 import com.practicum.playlistmaker.audioplayer.view_model.PlayerViewModel
 import com.practicum.playlistmaker.audioplayer.view_model.TrackScreenState
-import com.practicum.playlistmaker.databinding.AudioPlayerBinding
+import com.practicum.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.SearchActivity
+import com.practicum.playlistmaker.search.ui.SearchFragment
 import com.practicum.playlistmaker.utils.formatDuration
 import com.practicum.playlistmaker.utils.formatYear
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,22 +19,28 @@ import org.koin.core.parameter.parametersOf
 
 
 class AudioPlayerActivity : AppCompatActivity() {
-    private lateinit var binding: AudioPlayerBinding
+    companion object {
+        private const val RADIUS = 16
+    }
+    private lateinit var binding: FragmentAudioPlayerBinding
+
     private lateinit var track: Track
+
     private val viewModel: PlayerViewModel by viewModel {
         parametersOf(track)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = AudioPlayerBinding.inflate(layoutInflater)
+        binding = FragmentAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.btnPlayPause.isEnabled = false
 
-        track = intent.getParcelableExtra(SearchActivity.TRANSITION)!!
+        track = intent.getParcelableExtra(SearchFragment.TRANSITION)!!
 
+      //  val args: AudioPlayerActivityArgs by navArgs()
+       // track = args.trackId
 
         viewModel.getScreenState().observe(this) {
             when (it) {
@@ -136,9 +142,5 @@ class AudioPlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(RADIUS))
             .placeholder(R.drawable.placeholder_ap)
             .into(binding.imageAlbum)
-    }
-
-    companion object {
-        private const val RADIUS = 16
     }
 }

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.practicum.playlistmaker.databinding.FavoriteFragmentBinding
+import com.practicum.playlistmaker.databinding.FragmentFavoriteBinding
 import com.practicum.playlistmaker.media_favorite.view_model.FavoriteContentState
 import com.practicum.playlistmaker.media_favorite.view_model.FavoriteFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,11 +20,11 @@ class FavoritesFragment: Fragment() {
     private val viewModel: FavoriteFragmentViewModel by viewModel()
 
 
-    private lateinit var binding: FavoriteFragmentBinding
+    private lateinit var binding: FragmentFavoriteBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        binding = FavoriteFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
