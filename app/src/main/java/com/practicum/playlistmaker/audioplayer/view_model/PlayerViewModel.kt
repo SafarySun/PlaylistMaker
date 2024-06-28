@@ -72,12 +72,12 @@ class PlayerViewModel(
         playerInteraсtor.reset()
     }
 
-    private fun startPlayer() {               //  MP  start
+   fun startPlayer() {               //  MP  start
         playerInteraсtor.startPlayer()
         renderState(PlayerState.Play(provideCurrentPosition()))
     }
 
-    private fun pausePlayer() {               // MP  pauza
+    fun pausePlayer() {               // MP  pauza
         playerInteraсtor.pausePlayer()
         renderState(PlayerState.Pause)
 

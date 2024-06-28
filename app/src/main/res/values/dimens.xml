@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_for_layout">16dp</dimen>
-
-
-
     <dimen name="standart_padding">8dp</dimen>
     <dimen name="height_settings">64dp</dimen>
     <dimen name="toolbar_padding">12dp</dimen>

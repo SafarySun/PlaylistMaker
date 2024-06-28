@@ -2,14 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:textColor">@color/day_night</item>
-    </style>
-
-
-    <style name="HeadBox">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/YP_black</item>
+        <item name="android:backdropColor">@color/day_night</item>
     </style>
 
     <style name="ImageCase">

@@ -5,4 +5,6 @@
     <color name="text_hint">@color/black</color>
     <color name="update_text">@color/black</color>
     <color name="color_bottom">@color/YP_blue</color>
+    <color name="navigate_panel_bg">@color/YP_black</color>
+
 </resources>

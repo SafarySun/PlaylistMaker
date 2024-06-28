@@ -23,11 +23,12 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/navigation_item"
+        app:itemBackground="@color/navigate_panel_bg"
         app:itemIconTint="@color/color_item_bottom"
         app:itemTextColor="@color/color_item_bottom"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
