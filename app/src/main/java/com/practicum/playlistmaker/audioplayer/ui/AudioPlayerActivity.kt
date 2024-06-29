@@ -22,7 +22,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     companion object {
         private const val RADIUS = 16
     }
-
     private lateinit var binding: FragmentAudioPlayerBinding
 
     private lateinit var track: Track
@@ -38,9 +37,9 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.btnPlayPause.isEnabled = false
 
-        // track = intent.getParcelableExtra(SearchFragment.TRANSITION)!!
+            // track = intent.getParcelableExtra(SearchFragment.TRANSITION)!!
 
-        val args: AudioPlayerActivityArgs by navArgs()
+       val args: AudioPlayerActivityArgs by navArgs()
         track = args.trackId
 
         viewModel.getScreenState().observe(this) {
@@ -145,14 +144,14 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(binding.imageAlbum)
     }
 
-
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         viewModel.pausePlayer()
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.startPlayer()
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.isPlaying()) viewModel.startPlayer()
     }
+
 }

@@ -40,14 +40,18 @@ class PlayerViewModel(
 
     //podgotovka mp
     private fun preparePlayer(previewUrl: String) {
-        playerInteraсtor.preparePlayer(previewUrl,  listener = object : AudioPlayerInteraсtor.PlayerListener {
-            override fun onPrepared() {
-                renderState(PlayerState.Prepared)
-            }
-            override fun onCompletion() {
-                renderState(PlayerState.Prepared)
-            }
-        })
+        playerInteraсtor.preparePlayer(
+            previewUrl,
+            listener = object : AudioPlayerInteraсtor.PlayerListener {
+
+                override fun onPrepared() {
+                    renderState(PlayerState.Prepared)
+                }
+
+                override fun onCompletion() {
+                    renderState(PlayerState.Prepared)
+                }
+            })
 
     }
 
@@ -68,16 +72,17 @@ class PlayerViewModel(
         }
     }
 
-    fun reset() {
+    private fun reset() {
         playerInteraсtor.reset()
     }
 
-   fun startPlayer() {               //  MP  start
+     fun startPlayer() {
+        //  MP  start
         playerInteraсtor.startPlayer()
         renderState(PlayerState.Play(provideCurrentPosition()))
     }
 
-    fun pausePlayer() {               // MP  pauza
+     fun pausePlayer() {               // MP  pauza
         playerInteraсtor.pausePlayer()
         renderState(PlayerState.Pause)
 
@@ -92,7 +97,7 @@ class PlayerViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        playerInteraсtor.reset()
+        reset()
         playerState.value = PlayerState.Default
     }
 

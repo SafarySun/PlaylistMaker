@@ -20,13 +20,14 @@ class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
 
     override fun preparePlayer(previewUrl: String, listener: AudioPlayerInteraсtor.PlayerListener) {
         mediaPlayer.apply {
-            reset()
+
             setDataSource(previewUrl)
             prepareAsync()
             setOnPreparedListener {
                 listener.onPrepared()
             }
             setOnCompletionListener {
+                mediaPlayer.pause()
                 seekTo(0)
                 listener.onCompletion()
             }
@@ -35,7 +36,9 @@ class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
     }
 
     override fun reset() {
+        mediaPlayer.stop()
         mediaPlayer.reset()
+
     }
 
     override fun release() {
@@ -43,12 +46,6 @@ class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
     }
 
     override fun provideCurrentPosition(): Long {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.currentPosition
-        } else {
-            0
-        }
-
         return mediaPlayer.currentPosition.toLong()
     }
 

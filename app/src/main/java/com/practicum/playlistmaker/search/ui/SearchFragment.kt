@@ -82,7 +82,7 @@ class SearchFragment : Fragment() {
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
             val inputMethodManager =
-                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
 
             binding.placeholderHead.visibility = View.GONE
@@ -242,7 +242,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val TRANSITION = "TRANSITION"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
