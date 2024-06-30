@@ -237,7 +237,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun startTrack(track: Track) {
-        val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerActivity(track)
+        val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(track)
         findNavController().navigate(action)
     }
 

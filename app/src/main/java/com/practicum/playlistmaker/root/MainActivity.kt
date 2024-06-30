@@ -24,7 +24,7 @@ private lateinit var binding:ActivityMainBinding
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.audioPlayerActivity-> {
+                R.id.audioPlayerFragment-> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
                 else -> {

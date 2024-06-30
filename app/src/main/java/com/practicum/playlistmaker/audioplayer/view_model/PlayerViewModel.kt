@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.audioplayer.view_model
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +11,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 class PlayerViewModel(
     private val playerInteraсtor: AudioPlayerInteraсtor,
-    private val track: Track,
+    val track: Track,
 ) : ViewModel() {
 
     private val timerRunnable: Runnable = object : Runnable {
@@ -50,6 +51,9 @@ class PlayerViewModel(
 
                 override fun onCompletion() {
                     renderState(PlayerState.Prepared)
+                    mainThreadHandler.removeCallbacks(timerRunnable)
+                    Log.d("tag", "Complited")
+
                 }
             })
 
@@ -63,7 +67,7 @@ class PlayerViewModel(
                 pausePlayer()
             }
 
-            PlayerState.Prepared, PlayerState.Pause -> {
+            PlayerState.Prepared, is PlayerState.Pause -> {
                 startPlayer()
                 mainThreadHandler.post(timerRunnable)
             }
@@ -76,15 +80,15 @@ class PlayerViewModel(
         playerInteraсtor.reset()
     }
 
-     fun startPlayer() {
-        //  MP  start
+    fun startPlayer() {
         playerInteraсtor.startPlayer()
         renderState(PlayerState.Play(provideCurrentPosition()))
     }
 
-     fun pausePlayer() {               // MP  pauza
+    fun pausePlayer() {
         playerInteraсtor.pausePlayer()
-        renderState(PlayerState.Pause)
+        mainThreadHandler.removeCallbacks(timerRunnable)
+        renderState (PlayerState.Pause)
 
     }
 
@@ -95,14 +99,17 @@ class PlayerViewModel(
     fun isPlaying(): Boolean = playerInteraсtor.isPlaying()  // true or false
 
 
-    override fun onCleared() {
+   public override fun onCleared() {
         super.onCleared()
+       mainThreadHandler.removeCallbacks(timerRunnable)
         reset()
         playerState.value = PlayerState.Default
+
     }
 
     fun release() = playerInteraсtor.release()
 }
+
 
 
 

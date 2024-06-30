@@ -13,20 +13,20 @@
         android:name="com.practicum.playlistmaker.search.ui.SearchFragment"
         android:label="SearchFragment">
         <action
-            android:id="@+id/action_searchFragment_to_audioPlayerActivity"
-            app:destination="@id/audioPlayerActivity" />
+            android:id="@+id/action_searchFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
 
     </fragment>
 
-    <activity
-        android:id="@+id/audioPlayerActivity"
-        android:name="com.practicum.playlistmaker.audioplayer.ui.AudioPlayerActivity"
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.practicum.playlistmaker.audioplayer.ui.AudioPlayerFragment"
         android:label="AudioPlayerActivity">
         <argument
             android:name="track_id"
             app:argType="com.practicum.playlistmaker.search.domain.models.Track" />
 
-    </activity>
+    </fragment>
 
 
     <fragment

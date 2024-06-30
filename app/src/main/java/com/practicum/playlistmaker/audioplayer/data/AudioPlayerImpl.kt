@@ -7,7 +7,6 @@ import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
 class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
 
 
-
     override fun startPlayer() {
         mediaPlayer.start()
 
@@ -20,15 +19,13 @@ class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
 
     override fun preparePlayer(previewUrl: String, listener: AudioPlayerInteraсtor.PlayerListener) {
         mediaPlayer.apply {
-
+            reset()
             setDataSource(previewUrl)
             prepareAsync()
             setOnPreparedListener {
                 listener.onPrepared()
             }
             setOnCompletionListener {
-                mediaPlayer.pause()
-                seekTo(0)
                 listener.onCompletion()
             }
 
@@ -38,6 +35,8 @@ class AudioPlayerImpl(private val mediaPlayer: MediaPlayer) : AudioPlayer {
     override fun reset() {
         mediaPlayer.stop()
         mediaPlayer.reset()
+        mediaPlayer.setOnCompletionListener(null)
+        mediaPlayer.setOnPreparedListener(null)
 
     }
 
