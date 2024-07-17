@@ -2,13 +2,16 @@ package com.practicum.playlistmaker.search.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackInteractor: TrackInteractor
@@ -18,6 +21,7 @@ class SearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
     private val showToast = SingleLiveEvent<String?>()
     private var latestSearchText: String = ""
+    private var searchJob: Job? = null
 
     init {
 
@@ -27,15 +31,16 @@ class SearchViewModel(
             renderState(TrackState.HistoryEmpty)
         }
     }
-    fun onClearTextClick(show: () -> Unit,empty: () -> Unit){
+
+    fun onClearTextClick(show: () -> Unit, empty: () -> Unit) {
         val history = getHistory()
-        if(history.isNotEmpty()) {
+        if (history.isNotEmpty()) {
             renderState(TrackState.HistoryContent(history))
             show.invoke()
-        }else{
-        renderState(TrackState.HistoryEmpty)
-        empty.invoke()
-    }
+        } else {
+            renderState(TrackState.HistoryEmpty)
+            empty.invoke()
+        }
     }
 
     fun getHistory(): List<Track> = trackInteractor.getHistory()  // polu4aem treki iz sharedpref
@@ -56,7 +61,7 @@ class SearchViewModel(
 
     fun observeShowToast(): LiveData<String?> = showToast      //poluchaem LD for toast
     override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        searchJob?.cancel()
     }
 
     fun searchDebounce(changedText: String) {
@@ -64,16 +69,11 @@ class SearchViewModel(
             return
         }
         this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { searchRequest(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(changedText)
+        }
     }
 
     fun updateSearch() {
@@ -84,44 +84,45 @@ class SearchViewModel(
         if (newSearchText.isNotEmpty()) {
             renderState(TrackState.Loading)
 
-            trackInteractor.searchTracks(newSearchText, object : TrackInteractor.TrackConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    val track = mutableListOf<Track>()
-                    if (foundTracks != null) {
-                        track.addAll(foundTracks)
+            viewModelScope.launch {
+                trackInteractor
+                    .searchTracks(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
-
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                TrackState.Error
-                            )
-                            showToast.postValue(errorMessage)
-                        }
-                        track.isEmpty() -> {
-                            renderState(
-                                TrackState.Empty
-                            )
-                        }
-
-                        else-> {
-                            renderState(
-                                TrackState.Content(
-                                    track = track
-                                )
-                            )
-                        }
-
-                    }
-                }
-            })
+            }
         }
     }
 
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+
+        val track = mutableListOf<Track>()
+
+        if (foundTracks != null) {
+            track.addAll(foundTracks)
+        }else{
+            renderState(TrackState.Empty)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(TrackState.Error)
+                showToast.postValue(errorMessage)
+            }
+
+            track.isEmpty() -> {
+                renderState(TrackState.Empty)
+            }
+
+            else -> {
+                renderState(TrackState.Content(track = track))
+            }
+        }
+    }
+
+
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
-
     }
 }
 

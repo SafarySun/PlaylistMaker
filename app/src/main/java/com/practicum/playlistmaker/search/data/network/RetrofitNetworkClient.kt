@@ -5,24 +5,29 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.practicum.playlistmaker.search.data.dto.Response
 import com.practicum.playlistmaker.search.data.dto.TrackRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
     private val context: Context,
     private val playListApi:PlayListApi) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConected()) {
-            return Response().apply { resultCode = -1 }
+            return Response().apply { resultCode = NO_INTERNET }
         }
         return if (dto !is TrackRequest) {
-            Response().apply { resultCode = 400 }
+            Response().apply { resultCode = ERROR_SERVER }
         } else {
-            val resp = playListApi.search(dto.expression).execute()
+           return withContext(Dispatchers.IO){
+               try{
+                   val resp = playListApi.search(dto.expression)
+                   resp.apply { resultCode = SUCCESS }
 
-            val body = resp.body() ?: Response()
-
-            body.apply { resultCode = resp.code() }
-
+               } catch (e: Throwable) {
+                   Response().apply { resultCode = ERROR }
+               }
+            }
         }
     }
 
@@ -40,5 +45,11 @@ class RetrofitNetworkClient(
             }
         }
         return false
+    }
+    companion object{
+        private const val NO_INTERNET = -1
+        private const val ERROR_SERVER = 400
+        private const val SUCCESS = 200
+        private const val ERROR = 500
     }
 }

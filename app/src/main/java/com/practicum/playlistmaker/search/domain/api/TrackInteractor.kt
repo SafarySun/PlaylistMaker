@@ -1,9 +1,10 @@
 package com.practicum.playlistmaker.search.domain.api
 
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface TrackInteractor {
-    fun searchTracks(expression: String, consumer: TrackConsumer)
+    fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>>
 
     // Достаем треки из ШП конвертируем в Обьекты
     fun getHistory() : ArrayList<Track>
@@ -13,7 +14,8 @@ interface TrackInteractor {
 
     //очищаем историю
     fun clearHistory()
-    interface TrackConsumer {
-        fun consume(foundTracks: List<Track>?,errorMessage:String?)
-    }
+
+    //interface TrackConsumer {
+    //    fun consume(foundTracks: List<Track>?,errorMessage:String?)
+   // }
 }

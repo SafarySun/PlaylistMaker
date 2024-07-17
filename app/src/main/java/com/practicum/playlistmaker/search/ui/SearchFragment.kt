@@ -2,23 +2,22 @@ package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
 import com.practicum.playlistmaker.search.view_model.SearchViewModel
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -26,41 +25,41 @@ class SearchFragment : Fragment() {
 
     private val adapterHistory = TrackAdapter(object : ClickListernForTrack {
         override fun onTrackClickListern(track: Track) {
-            if (clickDebounce()) {
-                startTrack(track)
-            }
+            onClickTrackDebounce(track)
 
         }
     })
     private val adapter = TrackAdapter(object : ClickListernForTrack {
         override fun onTrackClickListern(track: Track) {
-            if (clickDebounce()) {
-                viewModel.addTrackToHistory(track)
-                startTrack(track)
-                Log.d("error","this point")
-                adapterHistory.notifyItemRemoved(0)
-                adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
-            }
-
+            onClickTrackDebounce(track)
         }
     })
 
     private lateinit var binding: FragmentSearchBinding
 
-    private var isClickAllowed = true
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var onClickTrackDebounce : (Track)-> Unit
+
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<SearchViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        onClickTrackDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY,viewLifecycleOwner.lifecycleScope, false){
+            track ->
+            viewModel.addTrackToHistory(track)
+            startTrack(track)
+            adapterHistory.notifyItemRemoved(0)
+            adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
+        }
 
     viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
@@ -71,7 +70,6 @@ class SearchFragment : Fragment() {
 
         binding.recycleViewSearch.adapter = adapter
         binding.rvHistory.adapter = adapterHistory
-
 
         // Фокусировка
         binding.inputEditText.setOnClickListener {
@@ -143,15 +141,6 @@ class SearchFragment : Fragment() {
 
     private fun showToast(additionalMessage: String?) {
         Toast.makeText(requireContext(), additionalMessage, Toast.LENGTH_LONG).show()
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
     }
 
     private fun render(state: TrackState) {

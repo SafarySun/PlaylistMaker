@@ -26,8 +26,6 @@ class AudioPlayerFragment : Fragment() {
     companion object {
         private const val RADIUS = 16
     }
-
-
     private lateinit var binding: FragmentAudioPlayerBinding
 
     private lateinit var track: Track

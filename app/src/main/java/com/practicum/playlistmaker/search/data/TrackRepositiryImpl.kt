@@ -10,6 +10,8 @@ import com.practicum.playlistmaker.search.data.sharedprefs.LocalStorage
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -17,15 +19,16 @@ class TrackRepositoryImpl(
     private val context: Context
 ) : TrackRepository {
 
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackRequest(expression))
-        return when (response.resultCode) {
+        when (response.resultCode) {
+
             ERROR_NETWORK -> {
-                Resource.Error(context.resources.getString(error_internet))
+                emit(Resource.Error(context.resources.getString(error_internet)))
             }
             SUCCESS ->{
 
-            Resource.Success((response as TrackResponse).results.map {
+            emit(Resource.Success((response as TrackResponse).results.map {
                 Track(
                     it.trackId,
                     it.trackName,
@@ -38,10 +41,10 @@ class TrackRepositoryImpl(
                     it.country,
                     it.previewUrl
                 )
-            })
+            }))
         }
             else -> {
-                Resource.Error(context.resources.getString(error_empty_search))
+                emit(Resource.Error(context.resources.getString(error_empty_search)))
         }
     }
     }

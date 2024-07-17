@@ -4,7 +4,7 @@ import java.util.Locale
 
 // Расширение для форматирования длительности трека
 fun formatDuration(time: Long): String {
-    return  SimpleDateFormat("mm:ss", Locale.getDefault()).format(time).toString()
+    return  SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 }
 
 // Расширение для форматирования года релиза трека
