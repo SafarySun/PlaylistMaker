@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
+import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -13,10 +15,12 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val playerInteraсtor: AudioPlayerInteraсtor,
     private val track: Track,
+    private val favoriteInteractor: FavoriteInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null
     private var playerState = MutableLiveData<PlayerState>()
+    private var isFavorite = MutableLiveData(track.isFavorite)
     private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
 
     init {
@@ -26,6 +30,7 @@ class PlayerViewModel(
     }
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
+    fun getIsFavorite(): LiveData<Boolean> = isFavorite
     fun getScreenState(): LiveData<TrackScreenState> = screenState
     private fun renderState(state: PlayerState) {
         playerState.postValue(state)
@@ -48,6 +53,22 @@ class PlayerViewModel(
             })
 
     }
+
+    fun onFavoriteClicked() {
+        isFavorite.value = !track.isFavorite
+        viewModelScope.launch(Dispatchers.IO) {
+            if (track.isFavorite == false) {
+                favoriteInteractor.insertTracks(track)
+               track.isFavorite = true
+            } else {
+                favoriteInteractor.deleteTrack(track)
+               track.isFavorite = false
+
+
+            }
+        }
+    }
+
 
     // nazhatie
     fun playbackControler() {
@@ -98,6 +119,7 @@ class PlayerViewModel(
 
     fun release() = playerInteraсtor.release()
     private fun timerStart() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (playerInteraсtor.isPlaying()) {
                 delay(TIMER_ITERATION)

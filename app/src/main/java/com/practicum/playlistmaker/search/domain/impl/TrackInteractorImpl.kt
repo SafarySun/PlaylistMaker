@@ -25,7 +25,7 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
         }
     }
 
-    override fun getHistory(): ArrayList<Track> {
+    override fun getHistory(): Flow<List<Track>> {
         return repository.getHistory()
     }
 

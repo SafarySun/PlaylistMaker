@@ -53,6 +53,13 @@ class AudioPlayerFragment : Fragment() {
         val args: AudioPlayerFragmentArgs by navArgs()
         track = args.trackId
 
+        viewModel.getIsFavorite().observe(viewLifecycleOwner) {
+                binding.btnFavourite.setImageResource(if
+                (it == true)R.drawable.delete_favorite
+                else R.drawable.add_favorites)
+
+        }
+
         viewModel.getScreenState().observe(viewLifecycleOwner) {
             when (it) {
                 TrackScreenState.Loading -> changeContentVisibility(false)
@@ -124,11 +131,13 @@ class AudioPlayerFragment : Fragment() {
             titleArtist.text = track.artistName
             itemDuration.text = formatDuration(track.trackTimeMillis)
             titleAlbum.text = track.trackName
-            binding.time.text = getString(R.string.time_zero)
+            time.text = getString(R.string.time_zero)
 
             btnPlayPause.setOnClickListener {
                 playbackControl()
-
+            }
+            btnFavourite.setOnClickListener{
+                viewModel.onFavoriteClicked()
             }
             itemAlbum.isVisible = track.collectionName.isNotBlank()
             itemAlbum.text = track.collectionName

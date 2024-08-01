@@ -7,7 +7,7 @@ interface TrackInteractor {
     fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>>
 
     // Достаем треки из ШП конвертируем в Обьекты
-    fun getHistory() : ArrayList<Track>
+    fun getHistory() : Flow<List<Track>>
 
     // проверяем обьекты в ШП и добавляем их в историю
     fun addTrackToHistory(track: Track)
@@ -15,7 +15,5 @@ interface TrackInteractor {
     //очищаем историю
     fun clearHistory()
 
-    //interface TrackConsumer {
-    //    fun consume(foundTracks: List<Track>?,errorMessage:String?)
-   // }
+
 }

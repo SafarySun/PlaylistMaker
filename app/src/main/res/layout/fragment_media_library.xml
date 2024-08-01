@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/navigate_panel_bg">
 
         <TextView
             style="@style/ToolbarTitle"
@@ -19,7 +20,8 @@
         app:tabTextColor="@color/day_night"
         app:tabRippleColor="@color/day_night"
         app:tabIndicatorColor="@color/day_night"
-        app:tabTextAppearance="@style/MyCustomTextAppearance"/>
+        app:tabTextAppearance="@style/MyCustomTextAppearance"
+        android:background="@color/navigate_panel_bg"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

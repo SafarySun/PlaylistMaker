@@ -9,7 +9,7 @@ interface TrackRepository {
 
 
     // Достаем треки из ШП конвертируем в Обьекты
-    fun getHistory() : ArrayList<Track>
+    fun getHistory() : Flow<List<Track>>
 
 
     // проверяем обьекты в ШП и добавляем их в историю

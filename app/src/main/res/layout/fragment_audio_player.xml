@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/toolbar_padding">
+    android:paddingBottom="@dimen/toolbar_padding"
+    android:background="@color/navigate_panel_bg">
 
     <ProgressBar
         android:id="@+id/progress_bar"

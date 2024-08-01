@@ -37,31 +37,40 @@ class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
 
-    private lateinit var onClickTrackDebounce : (Track)-> Unit
+    private lateinit var onClickTrackDebounce: (Track) -> Unit
 
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<SearchViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        onClickTrackDebounce = debounce<Track>(CLICK_DEBOUNCE_DELAY,viewLifecycleOwner.lifecycleScope, false){
-            track ->
+        onClickTrackDebounce = debounce<Track>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { track ->
             viewModel.addTrackToHistory(track)
             startTrack(track)
             adapterHistory.notifyItemRemoved(0)
-            adapterHistory.notifyItemRangeChanged(0, adapterHistory.tracks.size)
+            adapterHistory.notifyItemRangeChanged(0,
+                adapterHistory.tracks.size)
         }
 
-    viewModel.observeState().observe(viewLifecycleOwner) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
         viewModel.observeShowToast().observe(viewLifecycleOwner) {
@@ -89,9 +98,8 @@ class SearchFragment : Fragment() {
             adapter.notifyDataSetChanged()
             adapterHistory.notifyDataSetChanged()
 
-            viewModel.onClearTextClick(
-                show = { showHistory(viewModel.getHistory()) },
-                empty = { showEmptyScreen() })
+            viewModel.showHistory()
+
         }
 
         //Наблюдатель Текста
@@ -106,9 +114,7 @@ class SearchFragment : Fragment() {
 
                 binding.clearIcon.visibility = clearButtonVisibility(s)
                 if (s?.toString().isNullOrEmpty()) {
-                    viewModel.onClearTextClick(
-                        show = { showHistory(viewModel.getHistory()) },
-                        empty = { showEmptyScreen() })
+                    viewModel.showHistory()
                 }
 
             }
@@ -123,9 +129,9 @@ class SearchFragment : Fragment() {
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
             adapterHistory.tracks.clear()
-            viewModel.getHistory()
+            viewModel.showHistory()
             adapterHistory.notifyDataSetChanged()
-            //showEmptyScreen()
+
 
         }
         binding.buttonUpdate.setOnClickListener {

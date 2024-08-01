@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker.search.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,32 +17,27 @@ class SearchViewModel(
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<TrackState>()
-    private val handler = Handler(Looper.getMainLooper())
     private val showToast = SingleLiveEvent<String?>()
     private var latestSearchText: String = ""
     private var searchJob: Job? = null
 
     init {
-
-        if (getHistory().isNotEmpty()) {
-            renderState(TrackState.HistoryContent(getHistory()))
-        } else {
-            renderState(TrackState.HistoryEmpty)
-        }
+        showHistory()
     }
 
-    fun onClearTextClick(show: () -> Unit, empty: () -> Unit) {
-        val history = getHistory()
-        if (history.isNotEmpty()) {
-            renderState(TrackState.HistoryContent(history))
-            show.invoke()
-        } else {
-            renderState(TrackState.HistoryEmpty)
-            empty.invoke()
+    fun showHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            trackInteractor
+                .getHistory()
+                .collect { history ->
+                    if (history.isNotEmpty()) {
+                        renderState(TrackState.HistoryContent(history))
+                    } else {
+                        renderState(TrackState.HistoryEmpty)
+                    }
+                }
         }
     }
-
-    fun getHistory(): List<Track> = trackInteractor.getHistory()  // polu4aem treki iz sharedpref
 
 
     fun addTrackToHistory(track: Track) =
@@ -100,7 +94,7 @@ class SearchViewModel(
 
         if (foundTracks != null) {
             track.addAll(foundTracks)
-        }else{
+        } else {
             renderState(TrackState.Empty)
         }
 
