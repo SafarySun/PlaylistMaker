@@ -28,34 +28,32 @@ class TrackRepositoryImpl(
             ERROR_NETWORK -> {
                 emit(Resource.Error(context.resources.getString(error_internet)))
             }
-            SUCCESS ->{
+
+            SUCCESS -> {
 
                 val favoriteTrackId = appDatabase.trackDao().getId()
 
-            emit(Resource.Success((response as TrackResponse).results.map {
-                Track(
-                    it.trackId,
-                    it.trackName,
-                    it.artistName,
-                    it.trackTimeMillis,
-                    it.artworkUrl100,
-                    it.collectionName,
-                    it.releaseDate,
-                    it.primaryGenreName,
-                    it.country,
-                    it.previewUrl,
-                    isFavorite = (favoriteTrackId.contains(it.trackId))
-
-                )
-
+                emit(Resource.Success((response as TrackResponse).results.map {
+                    Track(
+                        it.trackId,
+                        it.trackName,
+                        it.artistName,
+                        it.trackTimeMillis,
+                        it.artworkUrl100,
+                        it.collectionName,
+                        it.releaseDate,
+                        it.primaryGenreName,
+                        it.country,
+                        it.previewUrl,
+                        isFavorite = (favoriteTrackId.contains(it.trackId))
+                    )
+                }))
             }
-            )
-            )
-        }
+
             else -> {
                 emit(Resource.Error(context.resources.getString(error_empty_search)))
+            }
         }
-    }
     }
 
     override fun getHistory(): Flow<List<Track>> = flow {

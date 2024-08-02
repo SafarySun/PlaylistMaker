@@ -25,7 +25,7 @@ class TrackAdapter(private val clickListern: ClickListernForTrack) :
 }
 
 
-interface ClickListernForTrack{
+fun interface ClickListernForTrack{
 
    fun onTrackClickListern(track: Track)
 }

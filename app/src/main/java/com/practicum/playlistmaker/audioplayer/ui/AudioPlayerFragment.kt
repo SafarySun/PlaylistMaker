@@ -145,7 +145,7 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun playbackControl() {
-        viewModel.playbackControler()
+        viewModel.playbackController()
         //   if (viewModel.isPlaying()) {
         //      binding.btnPlayPause.setImageResource(R.drawable.play)
         //   } else {

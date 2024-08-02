@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.model.TrackState
@@ -13,7 +14,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val trackInteractor: TrackInteractor
+    private val trackInteractor: TrackInteractor,
+    private val favoriteInteractor: FavoriteInteractor
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<TrackState>()
@@ -23,8 +25,21 @@ class SearchViewModel(
 
     init {
         showHistory()
+        viewModelScope.launch{
+            favoriteInteractor.getTrack().collect { favoriteTracks -> handleFavoritesChange(favoriteTracks) }
+        }
     }
-
+    private  fun handleFavoritesChange(favoriteTracks: List<Track>) {
+        val favoriteTrackIds = favoriteTracks.map { it.trackId }.toSet()
+        stateLiveData.value?.let { state ->
+            if (state is TrackState.Content) {
+                val updatedTracks = state.track.map { track ->
+                    track.copy(isFavorite = favoriteTrackIds.contains(track.trackId))
+                }
+                renderState(TrackState.Content(track = updatedTracks))
+            }
+        }
+    }
     fun showHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             trackInteractor
@@ -90,26 +105,18 @@ class SearchViewModel(
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
 
-        val track = mutableListOf<Track>()
-
-        if (foundTracks != null) {
-            track.addAll(foundTracks)
-        } else {
-            renderState(TrackState.Empty)
-        }
-
         when {
             errorMessage != null -> {
                 renderState(TrackState.Error)
                 showToast.postValue(errorMessage)
             }
 
-            track.isEmpty() -> {
+            foundTracks.isNullOrEmpty() -> {
                 renderState(TrackState.Empty)
             }
 
             else -> {
-                renderState(TrackState.Content(track = track))
+                renderState(TrackState.Content(track = foundTracks))
             }
         }
     }

@@ -23,17 +23,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
-    private val adapterHistory = TrackAdapter(object : ClickListernForTrack {
-        override fun onTrackClickListern(track: Track) {
+    private val adapterHistory = TrackAdapter{track ->
             onClickTrackDebounce(track)
+        }
 
-        }
-    })
-    private val adapter = TrackAdapter(object : ClickListernForTrack {
-        override fun onTrackClickListern(track: Track) {
+    private val adapter = TrackAdapter{track ->
             onClickTrackDebounce(track)
         }
-    })
 
     private lateinit var binding: FragmentSearchBinding
 

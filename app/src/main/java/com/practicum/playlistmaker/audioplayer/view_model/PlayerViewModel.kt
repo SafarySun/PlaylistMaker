@@ -20,7 +20,9 @@ class PlayerViewModel(
 
     private var timerJob: Job? = null
     private var playerState = MutableLiveData<PlayerState>()
+
     private var isFavorite = MutableLiveData(track.isFavorite)
+
     private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
 
     init {
@@ -57,21 +59,21 @@ class PlayerViewModel(
     fun onFavoriteClicked() {
         isFavorite.value = !track.isFavorite
         viewModelScope.launch(Dispatchers.IO) {
-            if (track.isFavorite == false) {
-                favoriteInteractor.insertTracks(track)
-               track.isFavorite = true
-            } else {
-                favoriteInteractor.deleteTrack(track)
-               track.isFavorite = false
-
-
+            favoriteInteractor.run {
+                if (track.isFavorite) {
+                    deleteTrack(track)
+                    track.isFavorite = false
+                } else {
+                    insertTracks(track)
+                    track.isFavorite = true
+                }
             }
         }
     }
 
 
     // nazhatie
-    fun playbackControler() {
+    fun playbackController() {
         when (playerState.value) {
             is PlayerState.Play -> {
                 pausePlayer()
