@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.model.TrackState
+import com.practicum.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

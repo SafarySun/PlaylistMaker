@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.media_favorite.data
 
-import com.practicum.playlistmaker.media_favorite.data.db.AppDatabase
-import com.practicum.playlistmaker.media_favorite.data.db.converters.TrackDbConvert
+import com.practicum.playlistmaker.utils.AppDatabase
+import com.practicum.playlistmaker.converters.TrackDbConvert
 import com.practicum.playlistmaker.media_favorite.data.db.entity.TrackEntity
 import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteRepository
 import com.practicum.playlistmaker.search.domain.models.Track

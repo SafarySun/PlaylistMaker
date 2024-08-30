@@ -27,6 +27,9 @@ private lateinit var binding:ActivityMainBinding
                 R.id.audioPlayerFragment-> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.playlistCreationFragment-> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }

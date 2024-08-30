@@ -14,8 +14,8 @@ import com.practicum.playlistmaker.media.MediaLibraryFragmentDirections
 import com.practicum.playlistmaker.media_favorite.view_model.FavoriteContentState
 import com.practicum.playlistmaker.media_favorite.view_model.FavoriteViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.ClickListernForTrack
-import com.practicum.playlistmaker.search.ui.TrackAdapter
+import com.practicum.playlistmaker.search.ui.model.recycler.ClickListernForTrack
+import com.practicum.playlistmaker.search.ui.model.recycler.TrackAdapter
 import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

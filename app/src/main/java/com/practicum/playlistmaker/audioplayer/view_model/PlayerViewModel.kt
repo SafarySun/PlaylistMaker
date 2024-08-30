@@ -5,39 +5,44 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayerInteraсtor
+import com.practicum.playlistmaker.media_creation.domain.api.PlayListCreationInteractor
+import com.practicum.playlistmaker.media_creation.domain.model.PlayList
 import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteInteractor
+import com.practicum.playlistmaker.media_playlist.view_model.PlayListContentState
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
+    private val playlistInteractor:PlayListCreationInteractor,
     private val playerInteraсtor: AudioPlayerInteraсtor,
     private val track: Track,
     private val favoriteInteractor: FavoriteInteractor
 ) : ViewModel() {
 
+    private val showToast = SingleLiveEvent<String?>()
     private var timerJob: Job? = null
     private var playerState = MutableLiveData<PlayerState>()
-
     private var isFavorite = MutableLiveData(track.isFavorite)
-
     private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
+    private val playListState = MutableLiveData<PlayListContentState>()
 
     init {
         preparePlayer(track.previewUrl)
         screenState.postValue(TrackScreenState.Content(track))
-
     }
-
+    fun getPlayListState(): LiveData<PlayListContentState> = playListState
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getIsFavorite(): LiveData<Boolean> = isFavorite
     fun getScreenState(): LiveData<TrackScreenState> = screenState
     private fun renderState(state: PlayerState) {
         playerState.postValue(state)
     }
-
+    fun observeShowToast(): LiveData<String?> = showToast
     //podgotovka mp
     private fun preparePlayer(previewUrl: String) {
         playerInteraсtor.preparePlayer(
@@ -128,6 +133,41 @@ class PlayerViewModel(
                 playerState.postValue(PlayerState.Play(provideCurrentPosition()))
             }
         }
+    }
+
+    fun addTrackButton() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylist()
+                .collect { playlist ->
+                    renderState(PlayListContentState.Content(playlist))
+                }
+        }
+    }
+
+    fun clickOnPlaylist(playlist:PlayList){
+         if (playlist.tracksId.contains(track.trackId)){
+             showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
+         }else{
+             viewModelScope.launch(Dispatchers.IO) {
+                 playlist.tracksId.add(track.trackId)
+                 playlistInteractor.addTrackToPlaylist(
+                     track,
+                     playlist.copy(amountTracks = playlist.amountTracks + 1)
+                 )
+                 withContext(Dispatchers.Main) {
+                     showToast.postValue("Добавлено в плейлист ${playlist.name}")
+
+                 }
+             }
+         }
+        renderState(PlayListContentState.Empty)
+    }
+
+
+
+    private fun renderState(state: PlayListContentState) {
+        playListState.postValue(state)
     }
 
     companion object {

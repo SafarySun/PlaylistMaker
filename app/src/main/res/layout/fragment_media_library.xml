@@ -8,7 +8,7 @@
 
         <TextView
             style="@style/ToolbarTitle"
-            android:layout_marginBottom="@dimen/toolbar_padding"
+            android:layout_marginBottom="@dimen/toolbar_padding12"
             android:text="@string/button_media_library" />
 
 
@@ -16,7 +16,7 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/padding_for_layout"
+        android:paddingHorizontal="@dimen/padding_for_layout16"
         app:tabTextColor="@color/day_night"
         app:tabRippleColor="@color/day_night"
         app:tabIndicatorColor="@color/day_night"

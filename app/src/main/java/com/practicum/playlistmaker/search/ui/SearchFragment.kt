@@ -15,8 +15,9 @@ import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.model.TrackState
+import com.practicum.playlistmaker.search.ui.model.recycler.TrackAdapter
 import com.practicum.playlistmaker.search.view_model.SearchViewModel
+import com.practicum.playlistmaker.search.view_model.TrackState
 import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,6 +31,7 @@ class SearchFragment : Fragment() {
     private val adapter = TrackAdapter{track ->
             onClickTrackDebounce(track)
         }
+
 
     private lateinit var binding: FragmentSearchBinding
 

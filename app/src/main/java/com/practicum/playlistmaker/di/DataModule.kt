@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
-import com.practicum.playlistmaker.media_favorite.data.db.AppDatabase
+import com.practicum.playlistmaker.media_creation.domain.model.PlayList
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.network.PlayListApi
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -12,6 +12,7 @@ import com.practicum.playlistmaker.search.data.sharedprefs.LocalStorage
 import com.practicum.playlistmaker.search.data.sharedprefs.LocalStorageImpl
 import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.practicum.playlistmaker.utils.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -55,7 +56,9 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
+    factory { PlayList() }
 
 }

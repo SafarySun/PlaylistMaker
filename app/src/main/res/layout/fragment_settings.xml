@@ -13,12 +13,12 @@
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/btn_switch_theme"
         style="@style/SwitchTheme"
-        android:paddingHorizontal="@dimen/padding_for_layout" />
+        android:paddingHorizontal="@dimen/padding_for_layout16" />
 
     <FrameLayout
         android:id="@+id/btn_share_app"
         style="@style/Boxframe"
-        android:paddingHorizontal="@dimen/padding_for_layout">
+        android:paddingHorizontal="@dimen/padding_for_layout16">
 
         <ImageView
             style="@style/ImageCase"
@@ -32,7 +32,7 @@
     <FrameLayout
         android:id="@+id/btn_write_support"
         style="@style/Boxframe"
-        android:paddingHorizontal="@dimen/padding_for_layout">
+        android:paddingHorizontal="@dimen/padding_for_layout16">
 
         <ImageView
             style="@style/ImageCase"
@@ -46,7 +46,7 @@
     <FrameLayout
         android:id="@+id/btn_ageement"
         style="@style/Boxframe"
-        android:paddingHorizontal="@dimen/padding_for_layout">
+        android:paddingHorizontal="@dimen/padding_for_layout16">
 
         <ImageView
             style="@style/ImageCase"

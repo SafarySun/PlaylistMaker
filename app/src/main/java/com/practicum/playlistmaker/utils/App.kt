@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.utils
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.markodevcic.peko.PermissionRequester
 import com.practicum.playlistmaker.di.dataModule
 import com.practicum.playlistmaker.di.interactorModule
 import com.practicum.playlistmaker.di.repositoryModule
@@ -28,6 +29,8 @@ class App : Application() {
             )
         }
         switchTheme()
+
+        PermissionRequester.initialize(applicationContext)
     }
     private fun switchTheme() {
         val repository : SettingsRepository by inject()
@@ -39,4 +42,6 @@ class App : Application() {
             }
         )
     }
+
+
 }

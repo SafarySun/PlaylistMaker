@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/toolbar_padding"
-    android:background="@color/navigate_panel_bg">
+    android:background="@color/white"
+    android:orientation="vertical">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/toolbar_padding12"
+    android:background="@color/navigate_panel_bg"
+    >
+
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -35,7 +44,8 @@
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standart_padding"
+        android:layout_marginTop="@dimen/standart_padding8"
+        android:layout_marginStart="@dimen/correction_padding4"
         app:layout_constraintBottom_toTopOf="@id/image_album"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +81,7 @@
         style="@style/Med14W400dn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/toolbar_padding"
+        android:layout_marginTop="@dimen/toolbar_padding12"
         android:fontFamily="@font/ys_display_regular"
         app:layout_constraintBottom_toTopOf="@id/top_barrier"
         app:layout_constraintStart_toStartOf="@+id/leftBorder"
@@ -234,5 +244,64 @@
         app:layout_constraintTop_toBottomOf="@id/item_genre"
         tools:text="@string/country" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <View android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:id="@+id/playlists_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/behavior_box_style"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="240dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@color/cardview_dark_background" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/toolbar_padding12"
+            android:gravity="center_horizontal"
+            android:paddingVertical="@dimen/toolbar_padding12"
+            android:textColor="@color/day_night"
+            android:textFontWeight="500"
+            android:fontFamily="@font/ys_display_medium"
+            android:textSize="@dimen/setting_text_size19"
+            android:text="@string/add_to_playlist"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/new_playlist_button"
+            style="@style/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/toolbar_padding12"
+            android:letterSpacing="0"
+            android:text="@string/new_playlist"
+            android:textSize="@dimen/text_size_14"
+            app:cornerRadius="@dimen/frame_padding24" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAdd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/playlist_frame"
+            android:layout_marginTop="@dimen/padding_for_layout16"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

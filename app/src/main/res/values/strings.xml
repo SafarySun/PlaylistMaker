@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">Playlist maker</string>
     <string name="button_search" translatable="false">Поиск</string>
     <string name="button_media_library" translatable="false">Медиатека</string>
@@ -34,5 +35,13 @@
     <string name="favourite_tracks" translatable="false">Избранные треки</string>
     <string name="we_have_not_playlists" translatable="false">Вы не создали\nни одного плейлиста</string>
     <string name="new_playlist" translatable="false">Новый плейлист</string>
+
+    <string name="title_new_playlist" translatable="false">Новый плейлист</string>
+    <string name="input_name" translatable="false">Название*</string>
+    <string name="input_description" translatable="false">Описание</string>
+    <string name="create" translatable="false">Создать</string>
+    <string name="permission" translatable="false">Необходимо разрешение на использование файлов</string>
+    <string name="add_to_playlist" translatable="false">Добавить в плейлист</string>
+    <string name="tracks" translatable="false"> %1$d Треков</string>
 
 </resources>

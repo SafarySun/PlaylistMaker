@@ -19,6 +19,7 @@ data class Track(
 ) : Parcelable {
 
 
+
     fun getCoverArtwork(): String {
         return artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
     }

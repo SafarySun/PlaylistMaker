@@ -2,8 +2,13 @@ package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.audioplayer.data.AudioPlayerImpl
 import com.practicum.playlistmaker.audioplayer.domain.api.AudioPlayer
+import com.practicum.playlistmaker.converters.PlayListDbConverts
+import com.practicum.playlistmaker.converters.TrackDbConvert
+import com.practicum.playlistmaker.media_creation.data.db.repository.PlayListCreationRepositoryImpl
+import com.practicum.playlistmaker.media_creation.data.file_storage.FileStorageRepository
+import com.practicum.playlistmaker.media_creation.data.file_storage.FileStorageRepositoryImpl
+import com.practicum.playlistmaker.media_creation.domain.api.PlayListCreationRepository
 import com.practicum.playlistmaker.media_favorite.data.FavoriteRepositoryImpl
-import com.practicum.playlistmaker.media_favorite.data.db.converters.TrackDbConvert
 import com.practicum.playlistmaker.media_favorite.domain.api.FavoriteRepository
 import com.practicum.playlistmaker.search.data.TrackRepositoryImpl
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
@@ -32,5 +37,16 @@ val repositoryModule = module {
     single<FavoriteRepository>{
         FavoriteRepositoryImpl(appDatabase = get(), trackDbConvert = get())
     }
-    factory{TrackDbConvert()}
+    factory{ TrackDbConvert() }
+
+    single<FileStorageRepository>{
+        FileStorageRepositoryImpl(context = androidContext())
+    }
+    single<PlayListCreationRepository> {
+        PlayListCreationRepositoryImpl(
+            appDatabase = get(),
+            playListDbConverter = get(),
+        trackDbConverter = get())
+    }
+    factory{ PlayListDbConverts() }
 }

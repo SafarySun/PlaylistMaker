@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.search.data
 import android.content.Context
 import com.practicum.playlistmaker.R.string.error_empty_search
 import com.practicum.playlistmaker.R.string.error_internet
-import com.practicum.playlistmaker.media_favorite.data.db.AppDatabase
+import com.practicum.playlistmaker.utils.AppDatabase
 import com.practicum.playlistmaker.search.data.dto.TrackRequest
 import com.practicum.playlistmaker.search.data.dto.TrackResponse
 import com.practicum.playlistmaker.search.data.network.NetworkClient
