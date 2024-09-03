@@ -178,12 +178,12 @@ class PlayerViewModel(
     */
    fun clickOnPlaylist(playlist: PlayList) {
        viewModelScope.launch(Dispatchers.IO) {
-           val isAdd = playlistInteractor.addTrackToPlaylist(track,playlist)
-           if (isAdd) {
-               showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
-           } else {
+          val addTrack = playlistInteractor.addTrackToPlaylist(track,playlist)
+           if (addTrack) {
                showToast.postValue("Добавлено в плейлист ${playlist.name}")
                playListState.postValue(PlayListContentState.Empty)
+           } else {
+               showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
            }
        }
    }

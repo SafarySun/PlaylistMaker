@@ -29,14 +29,19 @@ class PlayListCreationRepositoryImpl(
 
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: PlayList): Boolean {
+
         if (playlist.tracksId.contains(track.trackId)) return false
         playlist.apply {
-            tracksId.add(track.trackId)
-            amountTracks += 1
-        }
-        appDatabase.playlistDao().updatePlayList(playlist.playlistId, playlist.amountTracks)
 
-        appDatabase.trackInPlaylistDao().addTrackToPlaylist(trackDbConverter.mapTrackInPl(track))
+            tracksId.add(track.trackId)
+
+            amountTracks += 1
+
+            appDatabase.playlistDao().updatePlayList( playListDbConverter.map(playlist))
+
+            appDatabase.trackInPlaylistDao()
+                .addTrackToPlaylist(trackDbConverter.mapTrackInPl(track))
+        }
         return true
     }
 
