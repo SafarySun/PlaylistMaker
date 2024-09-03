@@ -7,6 +7,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.PlaylistFrameBinding
 import com.practicum.playlistmaker.media_creation.domain.model.PlayList
+import com.practicum.playlistmaker.utils.dpToPx
 
 
 class AudioPlayListViewHolder(private val binding: PlaylistFrameBinding):
@@ -15,7 +16,7 @@ class AudioPlayListViewHolder(private val binding: PlaylistFrameBinding):
         fun bind(playlist: PlayList, clickListern:ClickListernForPlayList) {
             Glide.with(binding.root)
                 .load(playlist.coverImage)
-                .transform(CenterCrop(), RoundedCorners(8))
+                .transform(CenterCrop(),RoundedCorners(dpToPx(binding.root.context,8)))
                 .placeholder(R.drawable.placeholder_ap)
                 .into(binding.imagePlaylist)
 

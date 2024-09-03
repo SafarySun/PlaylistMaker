@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/navigate_panel_bg"
     android:orientation="vertical"
-    android:layout_marginHorizontal="@dimen/padding_for_layout16"
-    android:background="@color/navigate_panel_bg">
+    android:paddingHorizontal="@dimen/padding_for_layout16">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/new_playlist_button"
@@ -19,26 +19,18 @@
         android:text="@string/new_playlist"
         android:textSize="@dimen/text_size_14"
         app:cornerRadius="@dimen/frame_padding24" />
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="@dimen/padding_for_layout16"
-   >
-
-   <androidx.recyclerview.widget.RecyclerView
-       android:paddingStart="@dimen/padding_for_layout16"
-       android:id="@+id/recyclerView"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_gravity="center_horizontal"
-       tools:listitem="@layout/item_play_list"
-       app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-       app:spanCount="2"
-       />
-</ScrollView>
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_for_layout16"
+        android:background="@color/navigate_panel_bg"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/item_play_list" />
 
 
     <FrameLayout
@@ -53,8 +45,7 @@
             android:id="@+id/left_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/error_note_left"
-            />
+            android:src="@drawable/error_note_left" />
 
         <ImageView
             android:id="@+id/image_error"
@@ -69,8 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:src="@drawable/error_note_right"
-             />
+            android:src="@drawable/error_note_right" />
     </FrameLayout>
 
     <TextView
@@ -84,5 +74,5 @@
         android:paddingHorizontal="46dp"
         android:text="@string/we_have_not_playlists"
         android:textSize="19sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </LinearLayout>

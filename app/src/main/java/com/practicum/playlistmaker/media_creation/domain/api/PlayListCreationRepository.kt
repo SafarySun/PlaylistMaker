@@ -11,10 +11,14 @@ interface PlayListCreationRepository {
     suspend fun deletePlaylist(playlist: PlayList)
 
 
-    suspend fun addTrackToPlaylist(track: Track, playlist: PlayList)
+    suspend fun addTrackToPlaylist(track: Track, playlist: PlayList):Boolean
 
 
      fun getPlayLists(): Flow<List<PlayList>>
+
+    suspend fun getPlaylist(playlistId: Int): PlayList
+
+
 
 
 }

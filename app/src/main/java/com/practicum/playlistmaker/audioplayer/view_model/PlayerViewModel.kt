@@ -15,10 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
-    private val playlistInteractor:PlayListCreationInteractor,
+    private val playlistInteractor: PlayListCreationInteractor,
     private val playerInteraсtor: AudioPlayerInteraсtor,
     private val track: Track,
     private val favoriteInteractor: FavoriteInteractor
@@ -31,10 +30,14 @@ class PlayerViewModel(
     private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
     private val playListState = MutableLiveData<PlayListContentState>()
 
+    private var playLists: List<PlayList> = emptyList()
+
     init {
         preparePlayer(track.previewUrl)
         screenState.postValue(TrackScreenState.Content(track))
+        getPlaylists()
     }
+
     fun getPlayListState(): LiveData<PlayListContentState> = playListState
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getIsFavorite(): LiveData<Boolean> = isFavorite
@@ -42,7 +45,9 @@ class PlayerViewModel(
     private fun renderState(state: PlayerState) {
         playerState.postValue(state)
     }
+
     fun observeShowToast(): LiveData<String?> = showToast
+
     //podgotovka mp
     private fun preparePlayer(previewUrl: String) {
         playerInteraсtor.preparePlayer(
@@ -135,35 +140,53 @@ class PlayerViewModel(
         }
     }
 
-    fun addTrackButton() {
+    private fun getPlaylists() {
         viewModelScope.launch {
             playlistInteractor
                 .getPlaylist()
-                .collect { playlist ->
-                    renderState(PlayListContentState.Content(playlist))
+                .collect { result ->
+                    playLists = result
                 }
         }
     }
 
-    fun clickOnPlaylist(playlist:PlayList){
-         if (playlist.tracksId.contains(track.trackId)){
-             showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
-         }else{
-             viewModelScope.launch(Dispatchers.IO) {
-                 playlist.tracksId.add(track.trackId)
-                 playlistInteractor.addTrackToPlaylist(
-                     track,
-                     playlist.copy(amountTracks = playlist.amountTracks + 1)
-                 )
-                 withContext(Dispatchers.Main) {
-                     showToast.postValue("Добавлено в плейлист ${playlist.name}")
-
-                 }
-             }
-         }
-        renderState(PlayListContentState.Empty)
+    fun addTrackButton() {
+        renderState(PlayListContentState.Content(playLists))
     }
 
+   /* fun clickOnPlaylist(playlist: PlayList) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("tag","${playlist.tracksId}")
+            if (playlist.tracksId.contains(track.trackId)) {
+                showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
+
+            } else {
+                playlist.tracksId.add(track.trackId)
+                playlistInteractor.addTrackToPlaylist(
+                    track,
+                    playlist.copy(amountTracks = playlist.amountTracks + 1)
+                )
+
+                withContext(Dispatchers.Main) {
+                    showToast.postValue("Добавлено в плейлист ${playlist.name}")
+                    playListState.postValue(PlayListContentState.Empty)
+                }
+            }
+        }
+    }
+
+    */
+   fun clickOnPlaylist(playlist: PlayList) {
+       viewModelScope.launch(Dispatchers.IO) {
+           val isAdd = playlistInteractor.addTrackToPlaylist(track,playlist)
+           if (isAdd) {
+               showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
+           } else {
+               showToast.postValue("Добавлено в плейлист ${playlist.name}")
+               playListState.postValue(PlayListContentState.Empty)
+           }
+       }
+   }
 
 
     private fun renderState(state: PlayListContentState) {

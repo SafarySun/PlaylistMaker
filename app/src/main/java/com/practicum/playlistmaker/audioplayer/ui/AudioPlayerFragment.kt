@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
@@ -21,6 +23,7 @@ import com.practicum.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.practicum.playlistmaker.media_creation.domain.model.PlayList
 import com.practicum.playlistmaker.media_playlist.view_model.PlayListContentState
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.dpToPx
 import com.practicum.playlistmaker.utils.formatDuration
 import com.practicum.playlistmaker.utils.formatYear
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,8 +36,11 @@ class AudioPlayerFragment : Fragment() {
 
     private lateinit var track: Track
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
     private var playlistsAdapter = AudioPlayListAdapter {
         viewModel.clickOnPlaylist(it)
+
     }
 
     private val viewModel: PlayerViewModel by viewModel {
@@ -57,7 +63,7 @@ class AudioPlayerFragment : Fragment() {
         val args: AudioPlayerFragmentArgs by navArgs()
         track = args.trackId
 
-        val bottomSheetBehavior = BottomSheetBehavior
+        bottomSheetBehavior = BottomSheetBehavior
             .from(binding.playlistsBottomSheet).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
@@ -65,7 +71,6 @@ class AudioPlayerFragment : Fragment() {
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.isVisible = false
@@ -80,8 +85,6 @@ class AudioPlayerFragment : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
         })
-
-
 
         viewModel.getIsFavorite().observe(viewLifecycleOwner) {
             binding.btnFavourite.setImageResource(
@@ -129,6 +132,8 @@ class AudioPlayerFragment : Fragment() {
                     binding.btnPlayPause.setImageResource(R.drawable.play)
                     binding.time.text = formatDuration(viewModel.provideCurrentPosition())
                 }
+
+                else -> {}
             }
         }
 
@@ -143,6 +148,8 @@ class AudioPlayerFragment : Fragment() {
                     showPlayLists(state.playlists)
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
                 }
+
+                else -> {}
             }
         }
 
@@ -196,6 +203,7 @@ class AudioPlayerFragment : Fragment() {
                 findNavController().navigateUp()
             }
             newPlaylistButton.setOnClickListener {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 findNavController()
                     .navigate(
                         AudioPlayerFragmentDirections
@@ -217,8 +225,7 @@ class AudioPlayerFragment : Fragment() {
         val coverArtworkUrl = track.getCoverArtwork()
         Glide.with(binding.imageAlbum)
             .load(coverArtworkUrl)
-            .centerCrop()
-            .transform(RoundedCorners(RADIUS))
+            .transform(CenterCrop(),RoundedCorners(dpToPx(binding.root.context, RADIUS)))
             .placeholder(R.drawable.placeholder_ap)
             .into(binding.imageAlbum)
     }
@@ -232,6 +239,11 @@ class AudioPlayerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     companion object {

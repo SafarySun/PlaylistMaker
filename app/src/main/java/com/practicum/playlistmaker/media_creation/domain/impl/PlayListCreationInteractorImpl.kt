@@ -21,6 +21,10 @@ class PlayListCreationInteractorImpl(
         return repository.getPlayLists()
     }
 
-    override suspend fun addTrackToPlaylist(track: Track, playlist: PlayList) =
+    override suspend fun getPlaylist(playlistId: Int): PlayList =
+        repository.getPlaylist(playlistId)
+
+
+    override suspend fun addTrackToPlaylist(track: Track, playlist: PlayList) : Boolean =
         repository.addTrackToPlaylist(track, playlist)
 }

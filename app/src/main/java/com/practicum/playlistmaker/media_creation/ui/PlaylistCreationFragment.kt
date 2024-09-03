@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.media_creation.ui
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.media_creation.view_model.PlayListCreationViewModel
 import com.practicum.playlistmaker.media_creation.view_model.states.CompletionDialogState
+import com.practicum.playlistmaker.utils.dpToPx
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,10 +58,10 @@ class PlaylistCreationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        viewModel.imageUri.observe(viewLifecycleOwner){ uri ->
+        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
             Glide.with(binding.imageAlbum)
                 .load(uri)
-                .transform(CenterCrop(), RoundedCorners(24))
+                .transform(CenterCrop(), RoundedCorners(dpToPx(requireContext(),24)))
                 .placeholder(R.drawable.create_photo)
                 .into(binding.imageAlbum)
         }
@@ -79,73 +81,77 @@ class PlaylistCreationFragment : Fragment() {
             }
         binding.imageAlbum.setOnClickListener {
             lifecycleScope.launch {
-                requester.request(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    .collect { result ->
-                        when (result) {
-                            is PermissionResult.Granted -> {
-                                setImage(pickMedia)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requester.request(Manifest.permission.READ_MEDIA_IMAGES)
+                } else {
+                    requester.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .collect { result ->
+                            when (result) {
+                                is PermissionResult.Granted -> {
+                                    setImage(pickMedia)
+                                }
+
+                                is PermissionResult.Denied.DeniedPermanently -> {
+                                    settings()
+                                }
+
+                                else -> Toast.makeText(
+                                    requireContext(),
+                                    R.string.permission,
+                                    Toast.LENGTH_LONG
+                                ).show()
+
                             }
-
-                            is PermissionResult.Denied.DeniedPermanently -> {
-                                settings()
-                            }
-
-                            else -> Toast.makeText(
-                                requireContext(),
-                                R.string.permission,
-                                Toast.LENGTH_LONG
-                            ).show()
-
                         }
-                    }
+                }
             }
         }
 
 
-        val backClick = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")              // Заголовок диалога
-            .setMessage("Все несохраненные данные будут потеряны")  // Описание диалога
-            //.setNeutralButton("Отмена") { dialog, which ->}       // Добавляет кнопку «Отмена»
-            .setNegativeButton("Отмена") { _, _ ->
-                viewModel.continueCreating()
+            val backClick = MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Завершить создание плейлиста?")              // Заголовок диалога
+                .setMessage("Все несохраненные данные будут потеряны")  // Описание диалога
+                //.setNeutralButton("Отмена") { dialog, which ->}       // Добавляет кнопку «Отмена»
+                .setNegativeButton("Отмена") { _, _ ->
+                    viewModel.continueCreating()
+                }
+                .setPositiveButton("Завершить") { _, _ ->
+                    findNavController().navigateUp()
+
+                }
+
+            requireActivity().onBackPressedDispatcher.addCallback(this) {
+                viewModel.showCompletionDialog()
             }
-            .setPositiveButton("Завершить") { _, _ ->
-                findNavController().navigateUp()
-
+            viewModel.getCompletionState().observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    CompletionDialogState.SHOW_DIALOG -> backClick.show()
+                    CompletionDialogState.FINISH -> findNavController().navigateUp()
+                    else -> Unit
+                }
+            }
+            binding.createButton.setOnClickListener {
+                viewModel.createPlayList()
+                Toast.makeText(
+                    requireContext(), "Плейлист ${binding.nameEt.text} создан",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            viewModel.showCompletionDialog()
-        }
-        viewModel.getCompletionState().observe(viewLifecycleOwner) { state ->
-            when (state) {
-                CompletionDialogState.SHOW_DIALOG -> backClick.show()
-                CompletionDialogState.FINISH -> findNavController().navigateUp()
-               else ->Unit
+            binding.backButton.setOnClickListener {
+                viewModel.showCompletionDialog()
+            }
+
+            binding.nameEt.doOnTextChanged { text, _, _, _ ->
+                binding.createButton.isEnabled = (!text.isNullOrBlank())
+                changeFrameColor(text, binding.nameLayout)
+                viewModel.saveNameEt(text)
+            }
+            binding.descriptionEt.doOnTextChanged { text, _, _, _ ->
+                changeFrameColor(text, binding.descriptionLayout)
+                viewModel.saveDescriptionEt(text)
             }
         }
-        binding.createButton.setOnClickListener {
-            viewModel.createPlayList()
-            Toast.makeText(
-                requireContext(), "Плейлист ${binding.nameEt.text} создан" ,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-
-        binding.backButton.setOnClickListener {
-            viewModel.showCompletionDialog()
-        }
-
-        binding.nameEt.doOnTextChanged { text, _, _, _ ->
-            binding.createButton.isEnabled = (!text.isNullOrEmpty())
-            changeFrameColor(text, binding.nameLayout)
-            viewModel.saveNameEt(text)
-        }
-        binding.descriptionEt.doOnTextChanged { text, _, _, _ ->
-            changeFrameColor(text, binding.descriptionLayout)
-            viewModel.saveDescriptionEt(text)
-        }
-    }
 
     private fun setImage(pickMedia: ActivityResultLauncher<PickVisualMediaRequest>) {
         pickMedia

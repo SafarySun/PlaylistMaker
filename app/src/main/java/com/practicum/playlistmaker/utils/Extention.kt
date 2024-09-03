@@ -1,4 +1,6 @@
 package com.practicum.playlistmaker.utils
+import android.content.Context
+import android.util.TypedValue
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -13,4 +15,8 @@ fun String.formatYear(): String {
     val parsedDate = formatter.parse(this)
     val outputFormatter = SimpleDateFormat("yyyy", Locale.getDefault())
     return outputFormatter.format(parsedDate)
+}
+fun dpToPx(context: Context, dp: Int): Int {
+    val metrics = context.resources.displayMetrics
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), metrics).toInt()
 }

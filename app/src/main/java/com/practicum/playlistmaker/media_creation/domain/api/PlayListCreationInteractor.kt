@@ -10,7 +10,8 @@ interface PlayListCreationInteractor {
     suspend fun deletePlaylist(playlist: PlayList)
 
     fun getPlaylist(): Flow<List<PlayList>>
-    suspend fun addTrackToPlaylist(track: Track, playlist: PlayList)
+    suspend fun addTrackToPlaylist(track: Track, playlist: PlayList):Boolean
 
+  suspend fun getPlaylist(playlistId: Int): PlayList
 
 }

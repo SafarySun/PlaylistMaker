@@ -6,7 +6,7 @@ data class PlayList(
     val description: String = "",
     val coverImage: String = "",
     val tracksId: ArrayList<Int> = arrayListOf(),
-    val amountTracks: Int = 0
+    var amountTracks: Int = 0
 )
 
 

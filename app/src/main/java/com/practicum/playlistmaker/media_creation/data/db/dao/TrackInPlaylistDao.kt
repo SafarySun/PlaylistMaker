@@ -9,4 +9,6 @@ interface TrackInPlaylistDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTrackToPlaylist(track: TrackInPlaylist)
 
+   // @Query("SELECT * FROM tracks_in_pl_table WHERE trackId in (:tracksIds)")
+   // suspend fun getTracks(tracksIds: List<Int>): List<TrackInPlaylist>
 }
