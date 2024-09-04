@@ -30,7 +30,8 @@
         android:background="@color/navigate_panel_bg"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
-        tools:listitem="@layout/item_play_list" />
+        tools:listitem="@layout/item_play_list"
+        />
 
 
     <FrameLayout
@@ -38,8 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/standart_padding8"
-        android:visibility="gone">
+        android:layout_marginTop="@dimen/padding40"
+        android:visibility="gone"
+        >
 
         <ImageView
             android:id="@+id/left_icon"

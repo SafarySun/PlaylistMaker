@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.media_favorite.data.db.dao.TrackDao
 import com.practicum.playlistmaker.media_favorite.data.db.entity.TrackEntity
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         TrackEntity::class,
         PlayListEntity::class,
