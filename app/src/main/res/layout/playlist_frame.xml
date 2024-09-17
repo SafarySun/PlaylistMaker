@@ -12,7 +12,8 @@
         android:id="@+id/image_playlist"
         android:layout_width="@dimen/avtor_image"
         android:layout_height="@dimen/avtor_image"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        tools:src="@color/black"/>
 
 
     <LinearLayout

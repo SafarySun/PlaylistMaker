@@ -13,20 +13,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class PlayListCreationViewModel(
+open class PlayListCreationViewModel(
     private val filesInteractor: FileStorageInteractor,
     private val dbInteractor: PlayListCreationInteractor,
-    private var playList: PlayList
 ) : ViewModel() {
 
     private val _imageUri = MutableLiveData<String?>()
     val imageUri: LiveData<String?>
         get() = _imageUri
 
-
-    var nameEt: String? = null
-    var descriptionEt: String? = null
-    var uriVm: Uri? = null
+    protected open var  playList = PlayList()
+    protected open var  nameEt: String? = null
+    protected open var  descriptionEt: String? = null
+    protected open var  uriVm: String? = null
 
 
     private val completionState = MutableLiveData<CompletionDialogState>()
@@ -34,20 +33,21 @@ class PlayListCreationViewModel(
 
     fun createPlayList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val uri = uriVm.toString()
-            if (!uri.isNullOrEmpty())
-                uriVm?.let { filesInteractor.saveImageToPrivateStorage(it) }
 
-            dbInteractor.insertPlayList(
-                playList.copy(
-                    name = nameEt ?: "",
-                    description = descriptionEt ?: "",
-                    coverImage = uriVm.toString() ?: ""
+            if (uriVm?.isNotEmpty() == true) {
+                uriVm = filesInteractor.saveImageToPrivateStorage(Uri.parse(uriVm)).toString()
+            }
+                dbInteractor.insertPlayList(
+                    playList.copy(
+                        name = nameEt ?: "",
+                        description = descriptionEt ?: "",
+                        coverImage = uriVm.toString() ?: ""
+                    )
                 )
-            )
-        }
-        viewModelScope.launch {
-            completionState.value = CompletionDialogState.FINISH
+
+            viewModelScope.launch {
+                completionState.value = CompletionDialogState.FINISH
+            }
         }
     }
 
@@ -65,19 +65,19 @@ class PlayListCreationViewModel(
             completionState.value = CompletionDialogState.CONTINUE
         }
 
-        fun saveImageUri(uri: Uri?) {
+      open  fun saveImageUri(uri: Uri?) {
             if (uri != null)
-                uriVm = uri
+                uriVm = uri.toString()
             _imageUri.value = uri.toString()
 
         }
 
-        fun saveNameEt(text: CharSequence?) {
+      open  fun saveNameEt(text: CharSequence?) {
             if (text != null)
                 nameEt = text.toString()
         }
 
-        fun saveDescriptionEt(text: CharSequence?) {
+      open  fun saveDescriptionEt(text: CharSequence?) {
             if (text != null)
                 descriptionEt = text.toString()
         }

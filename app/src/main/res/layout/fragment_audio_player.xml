@@ -159,12 +159,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/album"
-        app:layout_constraintBottom_toTopOf="@id/year"
+        app:layout_constraintBottom_toTopOf="@id/descriptionTv"
         app:layout_constraintStart_toStartOf="@+id/leftBorder"
         app:layout_constraintTop_toBottomOf="@id/duration" />
 
     <TextView
-        android:id="@+id/year"
+        android:id="@+id/descriptionTv"
         style="@style/LeftSort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
         android:text="@string/ganre"
         app:layout_constraintBottom_toTopOf="@id/country"
         app:layout_constraintStart_toEndOf="@+id/leftBorder"
-        app:layout_constraintTop_toBottomOf="@id/year" />
+        app:layout_constraintTop_toBottomOf="@id/descriptionTv" />
 
     <TextView
         android:id="@+id/country"

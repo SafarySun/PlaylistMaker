@@ -19,18 +19,9 @@ class SharingInteractorImpl(
         externalNavigator.openEmail(externalNavigator.getSupportEmailData())
     }
 
-    /*private fun getShareAppLink() = context.getString(R.string.adress_android)
-
-    private fun getSupportEmailData() = EmailData(
-        email = context.getString(R.string.adress_android),
-        subject = context.getString(R.string.text_theme),
-        text = context.getString(R.string.message_for_developers)
-    )
-
-    private fun getTermsLink() = context.getString(R.string.adress_website)
-
-     */
-
+    override fun sharePlData(sharedPlData: String) {
+        externalNavigator.shareLink(sharedPlData)
+    }
 
 }
 

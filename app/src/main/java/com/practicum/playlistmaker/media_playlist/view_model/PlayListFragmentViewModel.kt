@@ -8,7 +8,8 @@ import com.practicum.playlistmaker.media_creation.domain.api.PlayListCreationInt
 import com.practicum.playlistmaker.media_creation.domain.model.PlayList
 import kotlinx.coroutines.launch
 
-class PlayListFragmentViewModel(private val interactor: PlayListCreationInteractor) : ViewModel() {
+class PlayListFragmentViewModel(
+    private val interactor: PlayListCreationInteractor) : ViewModel() {
 
 
     private var playListsState = MutableLiveData<PlayListContentState>()
@@ -23,7 +24,7 @@ class PlayListFragmentViewModel(private val interactor: PlayListCreationInteract
     fun fillData() {
         viewModelScope.launch {
             interactor
-                .getPlaylist()
+                .getPlaylists()
                 .collect { playlist ->
                     processResult(playlist)
                 }

@@ -6,7 +6,9 @@ import com.practicum.playlistmaker.databinding.ItemPlayListBinding
 import com.practicum.playlistmaker.media_creation.domain.model.PlayList
 
 
-class PlayListAdapter(private val playLists: List<PlayList>): RecyclerView.Adapter<PlayListViewHolder>() {
+class PlayListAdapter(private val clickListern: ClickListernForPlayListLib): RecyclerView.Adapter<PlayListViewHolder>() {
+
+     val playLists = ArrayList<PlayList>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding =ItemPlayListBinding.inflate(layoutInflater, parent, false)
@@ -18,6 +20,12 @@ class PlayListAdapter(private val playLists: List<PlayList>): RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
-        holder.bind(playLists[position])
+        holder.bind(playLists[position],clickListern)
     }
+
 }
+fun interface ClickListernForPlayListLib{
+
+    fun onPlayListClickListern(playlist: PlayList)
+}
+

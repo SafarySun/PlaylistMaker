@@ -30,7 +30,7 @@ class PlayerViewModel(
     private var screenState = MutableLiveData<TrackScreenState>(TrackScreenState.Loading)
     private val playListState = MutableLiveData<PlayListContentState>()
 
-    private var playLists: List<PlayList> = emptyList()
+         private var playLists: List<PlayList> = emptyList()
 
     init {
         preparePlayer(track.previewUrl)
@@ -140,10 +140,10 @@ class PlayerViewModel(
         }
     }
 
-    private fun getPlaylists() {
+    fun  getPlaylists() {
         viewModelScope.launch {
             playlistInteractor
-                .getPlaylist()
+                .getPlaylists()
                 .collect { result ->
                     playLists = result
                 }
@@ -151,42 +151,24 @@ class PlayerViewModel(
     }
 
     fun addTrackButton() {
-        renderState(PlayListContentState.Content(playLists))
+       renderState(PlayListContentState.Content(playLists))
     }
 
-   /* fun clickOnPlaylist(playlist: PlayList) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d("tag","${playlist.tracksId}")
-            if (playlist.tracksId.contains(track.trackId)) {
-                showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
 
-            } else {
+    fun  clickOnPlaylist(playlist: PlayList){
+        if (playlist.tracksId.contains(track.trackId)) {
+            showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
                 playlist.tracksId.add(track.trackId)
-                playlistInteractor.addTrackToPlaylist(
-                    track,
-                    playlist.copy(amountTracks = playlist.amountTracks + 1)
-                )
-
-                withContext(Dispatchers.Main) {
-                    showToast.postValue("Добавлено в плейлист ${playlist.name}")
-                    playListState.postValue(PlayListContentState.Empty)
-                }
+                playlistInteractor.addTrackToPlaylist(track,
+                    playlist.copy(amountTracks = playlist.amountTracks + 1))
             }
+            showToast.postValue("Добавлено в плейлист ${playlist.name}")
+            playListState.postValue(PlayListContentState.Empty)
         }
-    }
 
-    */
-   fun clickOnPlaylist(playlist: PlayList) {
-       viewModelScope.launch(Dispatchers.IO) {
-          val addTrack = playlistInteractor.addTrackToPlaylist(track,playlist)
-           if (addTrack) {
-               showToast.postValue("Добавлено в плейлист ${playlist.name}")
-               playListState.postValue(PlayListContentState.Empty)
-           } else {
-               showToast.postValue("Трек уже добавлен в плейлист ${playlist.name}")
-           }
-       }
-   }
+    }
 
 
     private fun renderState(state: PlayListContentState) {

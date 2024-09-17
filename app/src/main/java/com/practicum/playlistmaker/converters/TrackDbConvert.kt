@@ -51,4 +51,19 @@ class TrackDbConvert {
             track.previewUrl,
             timestamp = System.currentTimeMillis()
         )
+
+    fun map(track: TrackInPlaylist, isFavorite: Boolean): Track =
+        Track(
+            track.trackId,
+            track.trackName,
+            track.artistName,
+            track.trackTimeMillis,
+            track.artworkUrl100,
+            track.collectionName,
+            track.releaseDate,
+            track.primaryGenreName,
+            track.country,
+            track.previewUrl,
+            isFavorite
+        )
 }

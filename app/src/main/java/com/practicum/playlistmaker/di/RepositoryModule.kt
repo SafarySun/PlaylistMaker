@@ -14,6 +14,8 @@ import com.practicum.playlistmaker.search.data.TrackRepositoryImpl
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
+import com.practicum.playlistmaker.utils.ResourceRepository
+import com.practicum.playlistmaker.utils.ResourceRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -49,4 +51,8 @@ val repositoryModule = module {
         trackDbConverter = get())
     }
     factory{ PlayListDbConverts() }
+
+    single<ResourceRepository>{
+        ResourceRepositoryImpl(context = get())
+    }
 }

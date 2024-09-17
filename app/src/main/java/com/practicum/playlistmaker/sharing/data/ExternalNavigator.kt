@@ -11,4 +11,6 @@ interface ExternalNavigator {
     fun getSupportEmailData() : EmailData
 
     fun getTermsLink():String
+
+
 }

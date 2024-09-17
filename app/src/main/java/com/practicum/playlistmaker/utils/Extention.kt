@@ -20,3 +20,5 @@ fun dpToPx(context: Context, dp: Int): Int {
     val metrics = context.resources.displayMetrics
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), metrics).toInt()
 }
+fun getMinutes(durationSum :Int):Int =
+    SimpleDateFormat("mm", Locale.getDefault()).format(durationSum).toInt()

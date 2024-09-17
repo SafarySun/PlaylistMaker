@@ -31,12 +31,12 @@ import com.practicum.playlistmaker.utils.dpToPx
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistCreationFragment : Fragment() {
+open class PlaylistCreationFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
-    private val viewModel by viewModel<PlayListCreationViewModel>()
+     open val viewModel by viewModel<PlayListCreationViewModel>()
 
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
     override fun onCreateView(
@@ -81,13 +81,13 @@ class PlaylistCreationFragment : Fragment() {
 
 
         val backClick = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")              // Заголовок диалога
-            .setMessage("Все несохраненные данные будут потеряны")  // Описание диалога
+            .setTitle(getString(R.string.view_finish_creating1))              // Заголовок диалога
+            .setMessage(getString(R.string.view_finish_creating2))  // Описание диалога
             //.setNeutralButton("Отмена") { dialog, which ->}       // Добавляет кнопку «Отмена»
-            .setNegativeButton("Отмена") { _, _ ->
+            .setNegativeButton(getString(R.string.view_cancle)) { _, _ ->
                 viewModel.continueCreating()
             }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setPositiveButton(getString(R.string.view_finish)) { _, _ ->
                 findNavController().navigateUp()
 
             }

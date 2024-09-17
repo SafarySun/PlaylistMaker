@@ -30,6 +30,9 @@ private lateinit var binding:ActivityMainBinding
                 R.id.playlistCreationFragment-> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.inPlayListFragment-> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
