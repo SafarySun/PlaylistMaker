@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.root
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.practicum.playlistmaker.R
@@ -25,13 +26,16 @@ private lateinit var binding:ActivityMainBinding
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.audioPlayerFragment-> {
-                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.bottomNavigationView.isVisible = false
+                    binding.crossLine.isVisible = false
                 }
                 R.id.playlistCreationFragment-> {
-                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.bottomNavigationView.isVisible = false
+                    binding.crossLine.isVisible = false
                 }
                 R.id.inPlayListFragment-> {
-                    binding.bottomNavigationView.visibility = View.GONE
+                    binding.bottomNavigationView.isVisible = false
+                    binding.crossLine.isVisible = false
                 }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE

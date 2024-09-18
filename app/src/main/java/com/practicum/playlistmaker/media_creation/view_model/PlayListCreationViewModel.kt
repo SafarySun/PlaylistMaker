@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.media_creation.view_model
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,13 +36,19 @@ open class PlayListCreationViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 
             if (uriVm?.isNotEmpty() == true) {
-                uriVm = filesInteractor.saveImageToPrivateStorage(Uri.parse(uriVm)).toString()
+                        Log.e("tag","startupdate")
+
+                Log.e("tag","$uriVm")
+                uriVm?.let{
+                    filesInteractor.saveImageToPrivateStorage((Uri.parse(uriVm)).toString())
+                }
+                Log.e("tag","$uriVm")
             }
                 dbInteractor.insertPlayList(
                     playList.copy(
                         name = nameEt ?: "",
                         description = descriptionEt ?: "",
-                        coverImage = uriVm.toString() ?: ""
+                        coverImage = uriVm ?: ""
                     )
                 )
 
