@@ -34,8 +34,10 @@ class FileStorageRepositoryImpl(private val context: Context):FileStorageReposit
             BitmapFactory
                 .decodeStream(inputStream)
                 .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+
 Log.e("tag","$file")
-            file.toUri().toString()
+
+            Uri.parse(file.path).toString()
 
 
         }
