@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingHorizontal="@dimen/padding_for_layout"
-    android:layout_marginVertical="@dimen/standart_padding">
+    android:paddingHorizontal="@dimen/padding_for_layout16"
+    android:layout_marginVertical="@dimen/standart_padding8"
+    android:background="@color/navigate_panel_bg">
     <ImageView
         android:id="@+id/image_artist"
         android:layout_width="@dimen/avtor_image"
@@ -19,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_margin="@dimen/standart_padding">
+        android:layout_margin="@dimen/standart_padding8">
     <TextView
         android:id="@+id/track_name"
         android:layout_width="match_parent"

@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">Playlist maker</string>
     <string name="button_search" translatable="false">Поиск</string>
     <string name="button_media_library" translatable="false">Медиатека</string>
@@ -11,6 +12,13 @@
     <string name="update" translatable="false">Обновить</string>
     <string name="clear" translatable="false">Очистить историю</string>
     <string name="title_history" translatable="false">Вы искали</string>
+    <string name="time_zero" translatable="false">00:00</string>
+
+    <string name="country" translatable="false">Страна</string>
+    <string name="album" translatable="false">Альбом</string>
+    <string name="year" translatable="false">Год</string>
+    <string name="ganre" translatable="false">Жанр</string>
+    <string name="duration" translatable="false">Длительность</string>
 
     <string name="adress_email" translatable="false">arakalandadze@gmail.com</string>
     <string name="text_theme" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
@@ -21,5 +29,53 @@
 
     <string name="error_internet" translatable="false">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="error_empty_search" translatable="false">Ничего не нашлось</string>
+
+    <string name="error_empty_media" translatable="false">Ваша медиатека пуста</string>
+    <string name="playsists" translatable="false">Плейлисты</string>
+    <string name="favourite_tracks" translatable="false">Избранные треки</string>
+    <string name="we_have_not_playlists" translatable="false">Вы не создали\nни одного плейлиста</string>
+    <string name="new_playlist" translatable="false">Новый плейлист</string>
+
+    <string name="title_new_playlist" translatable="false">Новый плейлист</string>
+    <string name="input_name" translatable="false">Название*</string>
+    <string name="input_description" translatable="false">Описание</string>
+    <string name="create" translatable="false">Создать</string>
+    <string name="permission" translatable="false">Необходимо разрешение на использование файлов</string>
+    <string name="add_to_playlist" translatable="false">Добавить в плейлист</string>
+    <string name="tracks" translatable="false"> %1$d Треков</string>
+    <string name="minutes" translatable="false"> %1$d Минут</string>
+
+    <string name="view_finish_creating1" translatable="false"> Завершить создание плейлиста?</string>
+    <string name="view_finish_creating2" translatable="false">Все несохраненные данные будут потеряны</string>
+    <string name="view_cancle" translatable="false"> Отмена</string>
+    <string name="view_yes" translatable="false">Да</string>
+    <string name="view_no" translatable="false">Нет</string>
+    <string name="view_finish" translatable="false">Завершить</string>
+    <string name="view_delete_track" translatable="false">Хотите удалить трек?</string>
+    <string name="empty" translatable="false">Пустой плейлист</string>
+    <string name="edit" translatable="false">Редактировать информацию</string>
+    <string name="edit_title" translatable="false">Редактировать</string>
+    <string name="delete_playlist" translatable="false">Удалить плейлист</string>
+    <string name="want_delete_playlist" translatable="false">Хотите удалить плейлист</string>
+    <string name="empty_playlist_toast" translatable="false"> В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="save" translatable="false"> Сохранить</string>
+
+    <plurals name="plurals_minutes" translatable="false">
+        <item quantity="zero">0 минут</item>
+        <item quantity="one">%1$d минута</item>
+        <item quantity="two">%1$d минуты</item>
+        <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
+        <item quantity="other">%1$d минут</item>
+    </plurals>
+
+    <plurals name="plurals_tracks" translatable="false">
+        <item quantity="zero">0 треков</item>
+        <item quantity="one">%1$d трек</item>
+        <item quantity="two">%1$d трека</item>
+        <item quantity="few">%1$d трека</item>
+        <item quantity="many">%1$d треков</item>
+        <item quantity="other">%1$d треков</item>
+    </plurals>
 
 </resources>
