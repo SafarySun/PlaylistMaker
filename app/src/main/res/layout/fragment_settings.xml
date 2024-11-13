@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/navigate_panel_bg">
+    
+        <TextView
+            style="@style/ToolbarTitle"
+            android:text="@string/button_setting" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/btn_switch_theme"
+        style="@style/SwitchTheme"
+        android:paddingHorizontal="@dimen/padding_for_layout16" />
+
+    <FrameLayout
+        android:id="@+id/btn_share_app"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout16">
+
+        <ImageView
+            style="@style/ImageCase"
+            android:src="@drawable/sent" />
+
+        <TextView
+            style="@style/TextSettings"
+            android:text="@string/send_app" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btn_write_support"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout16">
+
+        <ImageView
+            style="@style/ImageCase"
+            android:src="@drawable/group" />
+
+        <TextView
+            style="@style/TextSettings"
+            android:text="@string/support" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btn_ageement"
+        style="@style/Boxframe"
+        android:paddingHorizontal="@dimen/padding_for_layout16">
+
+        <ImageView
+            style="@style/ImageCase"
+            android:src="@drawable/agreement" />
+
+        <TextView
+            style="@style/TextSettings"
+            android:text="@string/user_agree" />
+    </FrameLayout>
+
+
+</LinearLayout>

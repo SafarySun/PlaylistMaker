@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mediaLibraryFragment">
+
+    <fragment
+        android:id="@+id/mediaLibraryFragment"
+        android:name="com.practicum.playlistmaker.media.MediaLibraryFragment"
+        android:label="MediaLibraryFragment"
+        tools:layout="@layout/fragment_media_library">
+    <action
+        android:id="@+id/action_mediaLibraryFragment_to_audioPlayerFragment"
+        app:destination="@id/audioPlayerFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistCreationFragment"
+            app:destination="@id/playlistCreationFragment" />
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_inPlayListFragment"
+            app:destination="@id/inPlayListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.practicum.playlistmaker.search.ui.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.practicum.playlistmaker.audioplayer.ui.AudioPlayerFragment"
+        android:label="AudioPlayerActivity"
+        tools:layout="@layout/fragment_audio_player">
+        <argument
+            android:name="track_id"
+            app:argType="com.practicum.playlistmaker.search.domain.models.Track" />
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_playlistCreationFragment"
+            app:destination="@id/playlistCreationFragment" />
+
+    </fragment>
+
+
+
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.practicum.playlistmaker.settings.ui.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"
+        />
+
+    <fragment
+        android:id="@+id/playlistCreationFragment"
+        android:name="com.practicum.playlistmaker.media_creation.ui.PlaylistCreationFragment"
+        android:label="PlaylistCreationFragment"
+        tools:layout="@layout/fragment_new_playlist"/>
+
+    <fragment
+        android:id="@+id/inPlayListFragment"
+        android:name="com.practicum.playlistmaker.in_playlist.ui.InPlayListFragment"
+        android:label="InPlayListFragment"
+        tools:layout="@layout/fragment_in_playlist">
+    <argument
+        android:name="playlist_id"
+        app:argType="integer" />
+        <action
+            android:id="@+id/action_inPlayListFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+        <action
+            android:id="@+id/action_inPlayListFragment_to_playListEditInfoFragment"
+            app:destination="@id/playListEditInfoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/playListEditInfoFragment"
+        android:name="com.practicum.playlistmaker.media_edit_info.ui.PlayListEditInfoFragment"
+        android:label="PlayListEditInfoFragment"
+       >
+    <argument
+        android:name="playlist_id"
+        app:argType="integer" />
+    </fragment>
+
+
+</navigation>
